@@ -22,7 +22,8 @@ public class ChooseProfileActivity extends AppCompatActivity {
         professionalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent login = new Intent(ChooseProfileActivity.this, LoginActivity.class);
+                startActivity(login);
             }
         });
 
