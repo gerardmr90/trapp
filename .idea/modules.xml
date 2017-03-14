@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Trapp.iml" filepath="$PROJECT_DIR$/Trapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PEX_Trapp.iml" filepath="$PROJECT_DIR$/PEX_Trapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
