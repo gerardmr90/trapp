@@ -17,4 +17,6 @@
         completions."
     </string>
     <string name="title_activity_maps">Map</string>
+    <string name="locaction_text_toast">Moving to current location</string>
+    <string name="last_known_positon_text">Last known position</string>
 </resources>
