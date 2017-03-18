@@ -18,6 +18,7 @@ import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.db.DeliveriesSQLiteHelper;
 import pex.gerardvictor.trapp.delivery.Delivery;
 import pex.gerardvictor.trapp.delivery.DeliveryAdapter;
+import pex.gerardvictor.trapp.delivery.DividerItemDecoration;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -38,6 +39,8 @@ public class HistoryActivity extends AppCompatActivity {
         deliveryAdapter = new DeliveryAdapter(getDataFromDB());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(deliveryAdapter);
     }
@@ -65,7 +68,6 @@ public class HistoryActivity extends AppCompatActivity {
 
             Delivery delivery = new Delivery(company, receiver, address, date, state);
             deliveryList.add(delivery);
-            Toast.makeText(this, delivery.toString(), Toast.LENGTH_LONG).show();
         }
         return deliveryList;
     }

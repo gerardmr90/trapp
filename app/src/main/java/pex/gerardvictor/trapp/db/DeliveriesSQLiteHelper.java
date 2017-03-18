@@ -17,10 +17,10 @@ public class DeliveriesSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "CREATE TABLE Deliveries " +
             "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            " company TEXT" +
+            " company TEXT, " +
             " receiver TEXT, " +
             " address TEXT, " +
-            " date TEXT" +
+            " date TEXT, " +
             " state TEXT )";
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS Deliveries";
 
@@ -61,8 +61,16 @@ public class DeliveriesSQLiteHelper extends SQLiteOpenHelper {
         db.insert("Deliveries", null, amazon);
         db.insert("Deliveries", null, ebay);
         db.insert("Deliveries", null, currys);
+        db.insert("Deliveries", null, amazon);
+        db.insert("Deliveries", null, ebay);
+        db.insert("Deliveries", null, currys);
+        db.insert("Deliveries", null, amazon);
+        db.insert("Deliveries", null, ebay);
+        db.insert("Deliveries", null, currys);
+        db.insert("Deliveries", null, amazon);
+        db.insert("Deliveries", null, ebay);
+        db.insert("Deliveries", null, currys);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -72,6 +80,6 @@ public class DeliveriesSQLiteHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Log.e("SQL Update", "Could not update SQL table");
         }
-
     }
+
 }
