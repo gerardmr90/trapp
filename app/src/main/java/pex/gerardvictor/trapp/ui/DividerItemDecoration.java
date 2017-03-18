@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp.delivery;
+package pex.gerardvictor.trapp.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

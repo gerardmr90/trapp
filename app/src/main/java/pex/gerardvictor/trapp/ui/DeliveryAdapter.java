@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp.delivery;
+package pex.gerardvictor.trapp.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.delivery.Delivery;
 
 /**
  * Created by gerard on 18/03/17.

@@ -8,8 +8,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +15,8 @@ import java.util.List;
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.db.DeliveriesSQLiteHelper;
 import pex.gerardvictor.trapp.delivery.Delivery;
-import pex.gerardvictor.trapp.delivery.DeliveryAdapter;
-import pex.gerardvictor.trapp.delivery.DividerItemDecoration;
+import pex.gerardvictor.trapp.ui.DeliveryAdapter;
+import pex.gerardvictor.trapp.ui.DividerItemDecoration;
 
 public class HistoryActivity extends AppCompatActivity {
 
