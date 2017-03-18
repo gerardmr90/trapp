@@ -1,10 +1,12 @@
-package pex.gerardvictor.trapp;
+package pex.gerardvictor.trapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import pex.gerardvictor.trapp.R;
 
 public class ChooseProfileActivity extends AppCompatActivity {
 

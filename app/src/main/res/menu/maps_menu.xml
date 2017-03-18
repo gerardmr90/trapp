@@ -1,20 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/type_normal"
-        android:title="@string/map_type_none" />
-
-    <item
-        android:id="@+id/type_terrain"
-        android:title="@string/map_type_terrain" />
-
-    <item
-        android:id="@+id/type_satellite"
-        android:title="@string/map_type_satellite" />
-
-    <item
-        android:id="@+id/type_hybrid"
-        android:title="@string/map_type_hybrid" />
+        android:id="@+id/history"
+        android:title="@string/history" />
 
     <item
         android:id="@+id/settings"

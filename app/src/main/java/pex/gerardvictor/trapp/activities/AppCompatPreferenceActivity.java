@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp;
+package pex.gerardvictor.trapp.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

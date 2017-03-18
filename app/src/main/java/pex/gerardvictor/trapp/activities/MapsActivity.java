@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp;
+package pex.gerardvictor.trapp.activities;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -30,6 +30,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import pex.gerardvictor.trapp.R;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -164,21 +166,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.type_normal:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                break;
-            case R.id.type_terrain:
-                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                break;
-            case R.id.type_satellite:
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                break;
-            case R.id.type_hybrid:
-                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            case R.id.history:
+                Intent history = new Intent(MapsActivity.this, HistoryActivity.class);
+                startActivity(history);
                 break;
             case R.id.settings:
-                Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                Intent settings = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(settings);
                 break;
             default:
                 break;
