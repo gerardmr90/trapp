@@ -42,19 +42,19 @@ public class DeliveriesSQLiteHelper extends SQLiteOpenHelper {
 
         amazon.put("company", "Amazon");
         amazon.put("receiver", "Gerard");
-        amazon.put("address", "12, Pollard St");
+        amazon.put("address", "1, Pollard St, Manchester M4 7AQ");
         amazon.put("date", "18/1/2017");
         amazon.put("state", "Delivered");
 
         ebay.put("company", "Ebay");
         ebay.put("receiver", "Gerard");
-        ebay.put("address", "12, Pollard St");
-        ebay.put("date", "22/2/2017");
+        ebay.put("address", "20, Pollard St, Manchester M4 7AQ");
+        ebay.put("date", "7/2/2017");
         ebay.put("state", "Delivered");
 
         currys.put("company", "Currys");
         currys.put("receiver", "Gerard");
-        currys.put("address", "12, Pollard St");
+        currys.put("address", "40, Pollard St, Manchester M4 7AQ");
         currys.put("date", "3/13/2017");
         currys.put("state", "Delivered");
 

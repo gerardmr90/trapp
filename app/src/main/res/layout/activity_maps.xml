@@ -22,4 +22,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:layout="@layout/activity_maps" />
 
+
+    <Button
+        android:id="@+id/nextDeliveryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.33"
+        android:text="Siguiente envio" />
+
+    <!--<Button-->
+        <!--android:layout_width=""-->
+        <!--android:layout_height="" />-->
+
 </android.support.constraint.ConstraintLayout>
