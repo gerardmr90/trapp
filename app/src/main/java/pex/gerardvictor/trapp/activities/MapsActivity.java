@@ -15,12 +15,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -48,7 +51,9 @@ import pex.gerardvictor.trapp.db.DeliveriesSQLiteHelper;
 import pex.gerardvictor.trapp.delivery.Delivery;
 import pex.gerardvictor.trapp.ui.DeliveryAdapter;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+import static android.content.Context.LOCATION_SERVICE;
+
+public class MapsActivity extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     Button nextDeliveryButton;
@@ -63,23 +68,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Integer numShipping = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setContentView(R.layout.activity_maps);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
         }
 
-        nextDeliveryButton = (Button) findViewById(R.id.nextDeliveryBtn);
+        nextDeliveryButton = (Button) getActivity().findViewById(R.id.nextDeliveryBtn);
         nextDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,19 +95,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_maps, container, false);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
 
     }
 
     private boolean checkGooglePlayServices() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(this);
+        int isAvailable = api.isGooglePlayServicesAvailable(getActivity());
         if (isAvailable == ConnectionResult.SUCCESS) {
             return true;
         } else if (api.isUserResolvableError(isAvailable)) {
-            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
+            Dialog dialog = api.getErrorDialog(getActivity(), isAvailable, 0);
             dialog.show();
         } else {
-            Toast.makeText(this, getText(R.string.common_google_play_services_install_text), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getText(R.string.common_google_play_services_install_text), Toast.LENGTH_LONG).show();
         }
         return false;
     }
@@ -142,10 +159,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
@@ -161,30 +178,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // Permission was granted.
-                    if (ContextCompat.checkSelfPermission(this,
+                    if (ContextCompat.checkSelfPermission(getActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
                         mMap.setMyLocationEnabled(true);
                     }
                 } else {
                     // Permission denied, Disable the functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
         }
     }
 
-    @Override
+    /*@Override
     protected void onResumeFragments() {
         super.onResumeFragments();
         if (mPermissionDenied) {
             mPermissionDenied = false;
         }
-    }
+    }*/
 
-    /*private void goToLastKnownLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+    private void goToLastKnownLocation() {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, true);
@@ -201,38 +218,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e) {
 
         }
-    }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.maps_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.history:
-                Intent history = new Intent(MapsActivity.this, HistoryActivity.class);
-                startActivity(history);
-                break;
-            case R.id.settings:
-                Intent settings = new Intent(MapsActivity.this, SettingsActivity.class);
-                startActivity(settings);
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(10000);
+        mLocationRequest.setInterval(1000);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -257,11 +251,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-
+        if (location == null) {
+            Toast.makeText(getActivity(), getText(R.string.location_unknown_text), Toast.LENGTH_LONG).show();
+        } else {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            mMap.animateCamera(cameraUpdate);
+        }
     }
 
     private List<Delivery> getDataFromDB() {
-        DeliveriesSQLiteHelper deliveriesSQLiteHelper = new DeliveriesSQLiteHelper(this);
+        DeliveriesSQLiteHelper deliveriesSQLiteHelper = new DeliveriesSQLiteHelper(getActivity());
         database = deliveriesSQLiteHelper.getReadableDatabase();
         deliveryList = new ArrayList<>();
 
@@ -312,13 +312,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         } else {
-            Toast.makeText(this, "No hay mas envios", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "No hay mas envios", Toast.LENGTH_LONG).show();
         }
     }
 
     public LatLng getLocationFromAddress(String strAddress) throws IOException {
 
-        Geocoder coder = new Geocoder(this);
+        Geocoder coder = new Geocoder(getActivity());
         List<Address> addresses = coder.getFromLocationName(strAddress, 2);
         Address addressresult = addresses.get(0);
         LatLng result = new LatLng(addressresult.getLatitude(), addressresult.getLongitude());
@@ -326,7 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return result;
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -336,6 +336,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
-    }
+    }*/
+
+
 
 }

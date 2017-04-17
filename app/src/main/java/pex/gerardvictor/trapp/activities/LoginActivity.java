@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
-                            Intent login = new Intent(LoginActivity.this, MapsActivity.class);
+                            Intent login = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(login);
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
-                            Intent login = new Intent(LoginActivity.this, MapsActivity.class);
+                            Intent login = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(login);
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
