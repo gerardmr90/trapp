@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "962162700142",
+    "firebase_url": "https://trapp-10c7b.firebaseio.com",
+    "project_id": "trapp-10c7b",
+    "storage_bucket": "trapp-10c7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962162700142:android:213105bba3529ffe",
+        "android_client_info": {
+          "package_name": "pex.gerardvictor.trapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962162700142-9v6135nb57bl4r53cj16qulhaa01kvm4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pex.gerardvictor.trapp",
+            "certificate_hash": "6db08ed50a0e1ce38782744e8b5f3610d90d2050"
+          }
+        },
+        {
+          "client_id": "962162700142-9r6jm7m0m6gfa9hdnc0v8rlt3a3v3rh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO7p3SbaeoHGue9w8v8JMSwDZ_NEOIKjw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962162700142-9r6jm7m0m6gfa9hdnc0v8rlt3a3v3rh5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
