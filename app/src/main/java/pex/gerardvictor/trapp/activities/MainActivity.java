@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.fragments.FragmentMaper;
+import pex.gerardvictor.trapp.fragments.MapsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

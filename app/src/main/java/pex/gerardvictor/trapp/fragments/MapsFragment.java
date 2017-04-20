@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp.activities;
+package pex.gerardvictor.trapp.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -53,7 +53,7 @@ import pex.gerardvictor.trapp.ui.DeliveryAdapter;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapsActivity extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     Button nextDeliveryButton;
@@ -68,13 +68,17 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
     private Integer numShipping = 0;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getActivity().setContentView(R.layout.activity_maps);
-
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setContentView(R.layout.maps_layout);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -100,7 +104,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_maps, container, false);
+        return inflater.inflate(R.layout.maps_layout, container, false);
     }
 
     @Override
