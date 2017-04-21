@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.session.Session;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        session = new Session(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity
             Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(settings);
         } else if (id == R.id.nav_logout) {
+            session.setLoggedIn(false);
             firebaseAuth.signOut();
             finish();
         } else if (id == R.id.nav_share) {

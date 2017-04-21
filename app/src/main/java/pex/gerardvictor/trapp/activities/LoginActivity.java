@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.session.Session;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button signInButton;
     private Button signUpButton;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
 
         signInButton = (Button) findViewById(R.id.sign_in_button);
         signUpButton = (Button) findViewById(R.id.sign_up_button);
+
+        session = new Session(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -56,6 +60,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+
+        if (session.loggedIn()) {
+            Intent login = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(login);
+            finish();
+        }
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +98,10 @@ public class LoginActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
+                            session.setLoggedIn(true);
                             Intent login = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(login);
+                            finish();
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(LoginActivity.this, R.string.auth_failed,
@@ -111,8 +123,10 @@ public class LoginActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
+                            session.setLoggedIn(true);
                             Intent login = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(login);
+                            finish();
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(LoginActivity.this, R.string.auth_failed,
