@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import pex.gerardvictor.trapp.R;
 
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+
+        DatabaseReference deliveries = database.getReference("deliveries");
     }
 
     @Override

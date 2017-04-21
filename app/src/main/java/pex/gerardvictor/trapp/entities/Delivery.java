@@ -1,4 +1,4 @@
-package pex.gerardvictor.trapp.delivery;
+package pex.gerardvictor.trapp.entities;
 
 /**
  * Created by gerard on 18/03/17.
@@ -7,12 +7,15 @@ package pex.gerardvictor.trapp.delivery;
 public class Delivery {
 
     public String company;
-    public String receiver;
+    public Receiver receiver;
     public String date;
     public String address;
     public String state;
 
-    public Delivery(String company, String receiver, String date, String address, String state) {
+    public Delivery() {
+    }
+
+    public Delivery(String company, Receiver receiver, String date, String address, String state) {
         this.company = company;
         this.receiver = receiver;
         this.date = date;
@@ -28,11 +31,11 @@ public class Delivery {
         this.company = company;
     }
 
-    public String getReceiver() {
+    public Receiver getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(String receiver) {
+    public void setReceiver(Receiver receiver) {
         this.receiver = receiver;
     }
 
@@ -56,6 +59,10 @@ public class Delivery {
         return state;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "Delivery{" +
@@ -67,7 +74,5 @@ public class Delivery {
                 '}';
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+
 }

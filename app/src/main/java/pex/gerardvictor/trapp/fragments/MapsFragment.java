@@ -3,7 +3,6 @@ package pex.gerardvictor.trapp.fragments;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Criteria;
@@ -34,17 +33,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.db.DeliveriesSQLiteHelper;
-import pex.gerardvictor.trapp.delivery.Delivery;
+import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.ui.DeliveryAdapter;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -72,7 +68,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button nextDeliveryButton = (Button) getActivity().findViewById(R.id.next_delivery_button);
+        /*Button nextDeliveryButton = (Button) getActivity().findViewById(R.id.next_delivery_button);
         nextDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +78,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -198,7 +194,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return false;
     }
 
-    private List<Delivery> getDataFromDB() {
+    /*private List<Delivery> getDataFromDB() {
         DeliveriesSQLiteHelper deliveriesSQLiteHelper = new DeliveriesSQLiteHelper(getActivity());
         database = deliveriesSQLiteHelper.getReadableDatabase();
         deliveryList = new ArrayList<>();
@@ -222,25 +218,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             deliveryList.add(delivery);
         }
         return deliveryList;
-    }
+    }*/
 
 
-    private Delivery GetDelivery() {
+    /*private Delivery GetDelivery() {
         try {
             List<Delivery> shippings = getDataFromDB();
             return shippings.get(numShipping++);
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
-    }
+    }*/
 
-    private void nextShipping() throws IOException {
-        Delivery nextDelivery = GetDelivery();
+    /*private Delivery getDeliveriesFromDB() {
+
+    }*/
+
+    /*private void nextShipping() throws IOException {
+        Delivery nextDelivery = getDeliveriesFromDB();
         if (nextDelivery != null) {
             LatLng position = getLocationFromAddress(nextDelivery.address);
             mMap.addMarker(new MarkerOptions()
                     .position(position)
-                    .title(nextDelivery.receiver));
+                    .title(nextDelivery.getReceiver().getName()));
 
             CameraPosition cameraPosition = CameraPosition.builder()
                     .target(position)
@@ -252,7 +252,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         } else {
             Toast.makeText(getActivity(), "No hay mas envios", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     public LatLng getLocationFromAddress(String strAddress) throws IOException {
 
@@ -277,4 +277,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         return false;
     }
+
 }

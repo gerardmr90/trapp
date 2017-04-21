@@ -1,29 +1,40 @@
 package pex.gerardvictor.trapp.activities;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.db.DeliveriesSQLiteHelper;
-import pex.gerardvictor.trapp.delivery.Delivery;
+import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.ui.DeliveryAdapter;
 import pex.gerardvictor.trapp.ui.DividerItemDecoration;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private final static String TAG = "HistoryActivity";
     private RecyclerView recyclerView;
-    private List<Delivery> deliveryList;
+    private List<Delivery> deliveryList = new ArrayList<>();
     private DeliveryAdapter deliveryAdapter;
-    private SQLiteDatabase database;
+    private DatabaseReference database;
+    private Context context;
+    private ChildEventListener childEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,45 +45,88 @@ public class HistoryActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        deliveryAdapter = new DeliveryAdapter(getDataFromDB());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(deliveryAdapter);
+        database = FirebaseDatabase.getInstance().getReference("deliveries");
+
+        context = getApplicationContext();
+
+        HistoryPopulator populator = new HistoryPopulator();
+        populator.execute();
     }
 
-
-    private List<Delivery> getDataFromDB() {
-        DeliveriesSQLiteHelper deliveriesSQLiteHelper = new DeliveriesSQLiteHelper(this);
-        database = deliveriesSQLiteHelper.getReadableDatabase();
-        deliveryList = new ArrayList<>();
-
-        String query = "SELECT * FROM Deliveries";
-        Cursor cursor = database.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            int companyIndex = cursor.getColumnIndex("company");
-            int receiverIndex = cursor.getColumnIndex("receiver");
-            int addressIndex = cursor.getColumnIndex("address");
-            int dateIndex = cursor.getColumnIndex("date");
-            int stateIndex = cursor.getColumnIndex("state");
-
-            String company = cursor.getString(companyIndex);
-            String receiver = cursor.getString(receiverIndex);
-            String address = cursor.getString(addressIndex);
-            String date = cursor.getString(dateIndex);
-            String state = cursor.getString(stateIndex);
-
-            Delivery delivery = new Delivery(company, receiver, address, date, state);
-            deliveryList.add(delivery);
-        }
-        return deliveryList;
+    @Override
+    protected void onStop() {
+        super.onStop();
+        database.removeEventListener(childEventListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        database.close();
     }
+
+    private void showHistory() {
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                Delivery delivery = dataSnapshot.getValue(Delivery.class);
+                deliveryList.add(delivery);
+                deliveryAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+                Delivery delivery = dataSnapshot.getValue(Delivery.class);
+                String deliveryKey = dataSnapshot.getKey();
+                deliveryList.add(delivery);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+                String deliveryKey = dataSnapshot.getKey();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                Delivery movedDelivery = dataSnapshot.getValue(Delivery.class);
+                String deliveryKey = dataSnapshot.getKey();
+                deliveryList.add(movedDelivery);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "postDeliveries:onCancelled", databaseError.toException());
+                Toast.makeText(context, "Failed to load deliveries.",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        database.addChildEventListener(childEventListener);
+    }
+
+    private class HistoryPopulator extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            showHistory();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            deliveryAdapter = new DeliveryAdapter(deliveryList);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(deliveryAdapter);
+        }
+
+    }
+
 }

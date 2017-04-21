@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.delivery.Delivery;
+import pex.gerardvictor.trapp.entities.Delivery;
 
 /**
  * Created by gerard on 18/03/17.
@@ -27,7 +27,6 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     public DeliveryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.delivery_list_row, parent, false);
-
         return new DeliveryViewHolder(itemView);
     }
 
