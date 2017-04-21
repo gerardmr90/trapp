@@ -2,7 +2,6 @@ package pex.gerardvictor.trapp.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,11 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -67,28 +63,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private SQLiteDatabase database;
     private Integer numShipping = 0;
 
+    @Nullable
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.maps_layout, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setContentView(R.layout.maps_layout);
-
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-
-        nextDeliveryButton = (Button) getActivity().findViewById(R.id.nextDeliveryBtn);
+        Button nextDeliveryButton = (Button) getActivity().findViewById(R.id.next_delivery_button);
         nextDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,65 +85,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         });
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.maps_layout, container, false);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
-
-    private boolean checkGooglePlayServices() {
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(getActivity());
-        if (isAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        } else if (api.isUserResolvableError(isAvailable)) {
-            Dialog dialog = api.getErrorDialog(getActivity(), isAvailable, 0);
-            dialog.show();
-        } else {
-            Toast.makeText(getActivity(), getText(R.string.common_google_play_services_install_text), Toast.LENGTH_LONG).show();
-        }
-        return false;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        fragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
-
-            try {
-                nextShipping();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "No se ha podido obtener el siguiente envio", Toast.LENGTH_LONG).show();
-            }
-
-            return;
-        }*/
         enableMyLocation();
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        return false;
     }
 
     private void enableMyLocation() {
@@ -195,14 +132,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         }
     }
-
-    /*@Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mPermissionDenied) {
-            mPermissionDenied = false;
-        }
-    }*/
 
     private void goToLastKnownLocation() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -262,6 +191,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             mMap.animateCamera(cameraUpdate);
         }
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
     }
 
     private List<Delivery> getDataFromDB() {
@@ -330,18 +264,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return result;
     }
 
-    /*@Override
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
+    private boolean checkGooglePlayServices() {
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int isAvailable = api.isGooglePlayServicesAvailable(getActivity());
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        } else if (api.isUserResolvableError(isAvailable)) {
+            Dialog dialog = api.getErrorDialog(getActivity(), isAvailable, 0);
+            dialog.show();
+        } else {
+            Toast.makeText(getActivity(), getText(R.string.common_google_play_services_install_text), Toast.LENGTH_LONG).show();
+        }
+        return false;
     }
-
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }*/
-
-
-
 }

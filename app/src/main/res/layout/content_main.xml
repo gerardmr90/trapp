@@ -13,6 +13,6 @@
         android:id="@+id/map_fragment"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:name="pex.gerardvictor.trapp.fragments.FragmentMaper"/>
+        android:name="pex.gerardvictor.trapp.fragments.MapsFragment"/>
 
 </FrameLayout>
