@@ -264,18 +264,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return result;
     }
 
-    private boolean checkGooglePlayServices() {
+    private void checkGooglePlayServices() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(getActivity());
         if (isAvailable == ConnectionResult.SUCCESS) {
-            return true;
+
         } else if (api.isUserResolvableError(isAvailable)) {
             Dialog dialog = api.getErrorDialog(getActivity(), isAvailable, 0);
             dialog.show();
         } else {
             Toast.makeText(getActivity(), getText(R.string.common_google_play_services_install_text), Toast.LENGTH_LONG).show();
         }
-        return false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkGooglePlayServices();
+    }
 }
