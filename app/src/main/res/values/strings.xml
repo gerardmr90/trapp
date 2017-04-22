@@ -8,6 +8,11 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_name">Name</string>
+    <string name="prompt_address">Address (optional)</string>
+    <string name="empty_name_error">Insert a name</string>
+    <string name="empty_email_error">Insert an email</string>
+    <string name="empty_password_error">Insert a password</string>
+    <string name="empty_address_error">Insert an address</string>
     <string name="radio_button_personal">Personal</string>
     <string name="radio_button_professional">Professional</string>
     <string name="action_sign_in">Sign in or register</string>
