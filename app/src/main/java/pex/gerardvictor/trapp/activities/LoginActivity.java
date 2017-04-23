@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         if (session.loggedIn()) {
-            Intent login = new Intent(LoginActivity.this, MainActivity.class);
+            Intent login = new Intent(LoginActivity.this, PersonalActivity.class);
             startActivity(login);
             finish();
         }
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
                             session.setLoggedIn(true);
-                            Intent login = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent login = new Intent(LoginActivity.this, ChooserActivity.class);
                             startActivity(login);
                             finish();
                         } else {

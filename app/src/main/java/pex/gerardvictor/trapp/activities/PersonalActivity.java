@@ -23,10 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.session.Session;
 
-public class MainActivity extends AppCompatActivity
+public class PersonalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "PersonalActivity";
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_personal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -93,10 +93,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_history) {
-            Intent history = new Intent(MainActivity.this, HistoryActivity.class);
+            Intent history = new Intent(PersonalActivity.this, HistoryActivity.class);
             startActivity(history);
         } else if (id == R.id.nav_settings) {
-            Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent settings = new Intent(PersonalActivity.this, SettingsActivity.class);
             startActivity(settings);
         } else if (id == R.id.nav_logout) {
             session.setLoggedIn(false);

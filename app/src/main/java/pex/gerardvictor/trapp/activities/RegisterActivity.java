@@ -1,6 +1,5 @@
 package pex.gerardvictor.trapp.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -105,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
                             addUserName();
                             registerUser();
                             session.setLoggedIn(true);
-                            Intent login = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent login = new Intent(RegisterActivity.this, ChooserActivity.class);
                             login.putExtra("professional", true);
                             startActivity(login);
                             finish();
