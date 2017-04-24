@@ -31,7 +31,7 @@ public class ChooserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference("couriers");
+        database = FirebaseDatabase.getInstance().getReference("receivers");
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -40,10 +40,10 @@ public class ChooserActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    database.orderByKey().equalTo(user.getUid()).addValueEventListener(new ValueEventListener() {
+                    database.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot==null || dataSnapshot.getChildren()==null) {
+                            if (dataSnapshot.exists()) {
                                 Intent personal = new Intent(ChooserActivity.this, PersonalActivity.class);
                                 startActivity(personal);
                                 finish();
