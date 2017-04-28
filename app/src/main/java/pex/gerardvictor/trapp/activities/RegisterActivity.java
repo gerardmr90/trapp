@@ -105,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                             registerUser();
                             session.setLoggedIn(true);
                             Intent login = new Intent(RegisterActivity.this, ChooserActivity.class);
-                            login.putExtra("professional", true);
+                            login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(login);
                             finish();
                         } else {

@@ -88,7 +88,13 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-        <activity android:name=".activities.RegisterActivity"></activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".activities.LoginActivity"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

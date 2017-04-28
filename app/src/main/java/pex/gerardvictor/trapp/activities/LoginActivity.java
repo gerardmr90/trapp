@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                 Intent register = new Intent(LoginActivity.this, RegisterActivity.class);
                 register.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(register);
-                finish();
             }
         });
     }
