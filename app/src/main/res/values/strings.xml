@@ -210,4 +210,8 @@
 
     <string name="trapp_notification_header">Trapp</string>
 
+    <string name="next_delivery_button_text">Next delivery</string>
+    <string name="deliver_button_text">Deliver</string>
+    <string name="find_courier_button_text">Find courier</string>
+
 </resources>
