@@ -16,7 +16,7 @@ public class Company {
     public Company() {
     }
 
-    public Company(String name, List<Courier> couriers, List<Delivery> deliveries) {
+    public Company(String name) {
         this.name = name;
         couriers = new ArrayList<>();
         deliveries = new ArrayList<>();

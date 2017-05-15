@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         if (session.loggedIn()) {
-            Intent login = new Intent(LoginActivity.this, PersonalActivity.class);
+            Intent login = new Intent(LoginActivity.this, ChooserActivity.class);
             startActivity(login);
             finish();
         }

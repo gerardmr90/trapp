@@ -214,4 +214,9 @@
     <string name="deliver_button_text">Deliver</string>
     <string name="find_courier_button_text">Find courier</string>
 
+    <string name="create_delivery_receiver_textView">Receiver</string>
+    <string name="create_delivery_company_textView">Company</string>
+    <string name="create_delivery_date_textView">Date</string>
+    <string name="create_delivery_button">Create Delivery</string>
+
 </resources>

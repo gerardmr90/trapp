@@ -33,7 +33,7 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     @Override
     public void onBindViewHolder(DeliveryViewHolder holder, int position) {
         Delivery delivery = deliveries.get(position);
-        holder.companyName.setText(delivery.getCompany());
+        holder.companyName.setText(delivery.getCompany().getName());
         holder.deliveryDate.setText(delivery.getDate());
         holder.deliveryState.setText(delivery.getState());
     }

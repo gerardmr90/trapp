@@ -6,28 +6,36 @@ package pex.gerardvictor.trapp.entities;
 
 public class Delivery {
 
-    public String company;
+    public Courier courier;
     public Receiver receiver;
+    public Company company;
     public String date;
-    public String address;
     public String state;
 
     public Delivery() {
     }
 
-    public Delivery(String company, Receiver receiver, String date, String address, String state) {
-        this.company = company;
+    public Delivery(Courier courier, Receiver receiver, Company company, String date, String state) {
+        this.courier = courier;
         this.receiver = receiver;
+        this.company = company;
         this.date = date;
-        this.address = address;
         this.state = state;
     }
 
-    public String getCompany() {
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public Company getCompany() {
         return company;
     }
 
-    public void setCompany(String company) {
+    public void setCompany(Company company) {
         this.company = company;
     }
 
@@ -47,14 +55,6 @@ public class Delivery {
         this.date = date;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getState() {
         return state;
     }
@@ -66,13 +66,12 @@ public class Delivery {
     @Override
     public String toString() {
         return "Delivery{" +
-                "company='" + company + '\'' +
-                ", receiver='" + receiver + '\'' +
+                "courier=" + courier +
+                ", receiver=" + receiver +
+                ", company=" + company +
                 ", date='" + date + '\'' +
-                ", address='" + address + '\'' +
                 ", state='" + state + '\'' +
                 '}';
     }
-
 
 }
