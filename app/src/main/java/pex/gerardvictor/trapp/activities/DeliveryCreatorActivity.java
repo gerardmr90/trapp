@@ -70,7 +70,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         createDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                createDelivery();
             }
         });
     }
@@ -218,6 +218,24 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
             }
         };
         companies.addChildEventListener(companiesChildEventListener);
+    }
+
+    private void createDelivery() {
+        addDeliveryToReceiver();
+        addDeliveryToCourier();
+        addDeliveryToCompany();
+    }
+
+    private void addDeliveryToReceiver() {
+
+    }
+
+    private void addDeliveryToCourier() {
+
+    }
+
+    private void addDeliveryToCompany() {
+
     }
 
     private class ReceiversPopulator extends AsyncTask {

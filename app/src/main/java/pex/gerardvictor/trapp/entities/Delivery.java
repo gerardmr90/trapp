@@ -1,26 +1,41 @@
 package pex.gerardvictor.trapp.entities;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by gerard on 18/03/17.
  */
 
 public class Delivery {
 
-    public Courier courier;
-    public Receiver receiver;
-    public Company company;
-    public String date;
-    public String state;
+    private String uid;
+    private Courier courier;
+    private Receiver receiver;
+    private Company company;
+    private String date;
+    private String state;
 
     public Delivery() {
     }
 
-    public Delivery(Courier courier, Receiver receiver, Company company, String date, String state) {
+    public Delivery(String uid, Courier courier, Receiver receiver, Company company, String date, String state) {
+        this.uid = uid;
         this.courier = courier;
         this.receiver = receiver;
         this.company = company;
         this.date = date;
         this.state = state;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Courier getCourier() {
@@ -61,6 +76,19 @@ public class Delivery {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("courier", courier);
+        result.put("receiver", receiver);
+        result.put("company", company);
+        result.put("date", date);
+        result.put("state", state);
+
+        return result;
     }
 
     @Override

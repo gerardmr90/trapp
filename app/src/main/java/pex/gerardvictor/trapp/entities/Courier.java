@@ -1,7 +1,11 @@
 package pex.gerardvictor.trapp.entities;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gerard on 21/04/17.
@@ -9,6 +13,7 @@ import java.util.List;
 
 public class Courier {
 
+    private String uid;
     private String name;
     private String email;
     private List<Delivery> deliveries;
@@ -16,10 +21,19 @@ public class Courier {
     public Courier() {
     }
 
-    public Courier(String name, String email) {
+    public Courier(String uid, String name, String email) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
-        deliveries = new ArrayList<>();
+        this.deliveries = new ArrayList<>();
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -44,6 +58,17 @@ public class Courier {
 
     public void setDeliveries(List<Delivery> deliveries) {
         this.deliveries = deliveries;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("name", name);
+        result.put("email", email);
+        result.put("deliveries", deliveries);
+
+        return result;
     }
 
     @Override

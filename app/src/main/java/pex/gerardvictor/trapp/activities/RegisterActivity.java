@@ -193,16 +193,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private Receiver createReceiver() {
+        String uid = user.getUid();
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String address = addressEditText.getText().toString();
-        return new Receiver(name, email, address);
+        return new Receiver(uid, name, email, address);
     }
 
     private Courier createCourier() {
+        String uid = user.getUid();
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        return new Courier(name, email);
+        return new Courier(uid, name, email);
     }
 
     @Override
