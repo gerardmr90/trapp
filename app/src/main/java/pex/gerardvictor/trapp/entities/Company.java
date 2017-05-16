@@ -21,11 +21,22 @@ public class Company {
     public Company() {
     }
 
+    public Company(String name) {
+        this.name = name;
+    }
+
     public Company(String uid, String name) {
         this.uid = uid;
         this.name = name;
         this.couriers = new ArrayList<>();
         this.deliveries = new ArrayList<>();
+    }
+
+    public Company(String uid, String name, List<Courier> couriers, List<Delivery> deliveries) {
+        this.uid = uid;
+        this.name = name;
+        this.couriers = couriers;
+        this.deliveries = deliveries;
     }
 
     public String getUid() {

@@ -30,6 +30,14 @@ public class Receiver {
         this.deliveries = new ArrayList<>();
     }
 
+    public Receiver(String uid, String name, String email, String address, List<Delivery> deliveries) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.deliveries = deliveries;
+    }
+
     public String getUid() {
         return uid;
     }

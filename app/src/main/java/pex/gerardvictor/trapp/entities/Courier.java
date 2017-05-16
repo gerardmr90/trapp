@@ -28,6 +28,13 @@ public class Courier {
         this.deliveries = new ArrayList<>();
     }
 
+    public Courier(String uid, String name, String email, List<Delivery> deliveries) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        this.deliveries = deliveries;
+    }
+
     public String getUid() {
         return uid;
     }
