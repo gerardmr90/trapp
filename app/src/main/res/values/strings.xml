@@ -219,5 +219,6 @@
     <string name="create_delivery_company_textView">Company</string>
     <string name="create_delivery_date_textView">Date</string>
     <string name="create_delivery_button">Create Delivery</string>
+    <string name="delivery_created">Delivery successfully created</string>
 
 </resources>

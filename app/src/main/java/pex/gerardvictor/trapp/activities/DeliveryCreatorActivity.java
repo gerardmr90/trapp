@@ -120,6 +120,8 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateForm()) {
                     createDelivery();
+                    Toast.makeText(context, getString(R.string.delivery_created), Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         });
