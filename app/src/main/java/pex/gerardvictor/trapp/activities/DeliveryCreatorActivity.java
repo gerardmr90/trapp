@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
 
     private DatabaseReference receivers;
     private DatabaseReference companies;
+    private DatabaseReference couriers;
     private DatabaseReference database;
     private ChildEventListener receiversChildEventListener;
     private ChildEventListener companiesChildEventListener;
@@ -101,6 +103,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference();
         receivers = FirebaseDatabase.getInstance().getReference("receivers");
         companies = FirebaseDatabase.getInstance().getReference("companies");
+        couriers = FirebaseDatabase.getInstance().getReference("couriers");
 
         ReceiversPopulator receiversPopulator = new ReceiversPopulator();
         ReceiversEmailPopulator receiversEmailPopulator = new ReceiversEmailPopulator();
@@ -268,10 +271,10 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private void createDelivery() {
-        writeDelivery();
+        flushDatabase(writeDelivery());
     }
 
-    private void writeDelivery() {
+    private Delivery writeDelivery() {
         String key = database.child("deliveries").push().getKey();
         receiver = searchForReceiver();
         company = searchForCompany();
@@ -286,11 +289,14 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         childUpdates.put("/receivers/" + receiver.getUid() + "/" + key, postValues);
 
         database.updateChildren(childUpdates);
+
+        return delivery;
     }
 
     private Receiver searchForReceiver() {
-        if (receiversList.iterator().hasNext()) {
-            Receiver recv = receiversList.iterator().next();
+        Iterator iterator = receiversList.iterator();
+        while (iterator.hasNext()) {
+            Receiver recv = (Receiver) iterator.next();
             if (recv.getEmail().equals(receiverEmail)) {
                 return recv;
             }
@@ -299,13 +305,19 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private Company searchForCompany() {
-        if (companiesList.iterator().hasNext()) {
-            Company comp = companiesList.iterator().next();
+        Iterator iterator = companiesList.iterator();
+        while (iterator.hasNext()) {
+            Company comp = (Company) iterator.next();
             if (comp.getName().equals(companyName)) {
                 return comp;
             }
         }
         return null;
+    }
+
+    private void flushDatabase(Delivery delivery) {
+        couriers.child(user.getUid()).child(delivery.getUid()).child("courier").removeValue();
+        receivers.child(receiver.getUid()).child(delivery.getUid()).child("receiver").removeValue();
     }
 
     private boolean validateForm() {
