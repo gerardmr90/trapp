@@ -48,6 +48,7 @@ public class HistoryActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        deliveryAdapter = new DeliveryAdapter(deliveryList);
 
         database = FirebaseDatabase.getInstance().getReference("deliveries");
 

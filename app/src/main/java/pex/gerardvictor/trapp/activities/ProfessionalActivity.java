@@ -79,6 +79,7 @@ public class ProfessionalActivity extends AppCompatActivity
     private GoogleMap map;
 
     private List<Delivery> deliveriesList = new ArrayList<>();
+    private List<Location> deliveriesLocationList = new ArrayList<>();
 
     private Button deliverButton;
     private Button showDeliveriesButton;
@@ -100,6 +101,7 @@ public class ProfessionalActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         deliverButton = (Button) findViewById(R.id.deliver_button);
+        deliverButton.setVisibility(View.INVISIBLE);
         showDeliveriesButton = (Button) findViewById(R.id.show_deliveries_button);
 
         deliveries = FirebaseDatabase.getInstance().getReference("deliveries");
@@ -160,6 +162,7 @@ public class ProfessionalActivity extends AppCompatActivity
                         Toast.makeText(context, "There's no deliveries", Toast.LENGTH_LONG).show();
                     } else {
                         addDeliveriesToMap(deliveriesList);
+                        getLocationFromDelivery();
                     }
                 }
             });
@@ -170,7 +173,9 @@ public class ProfessionalActivity extends AppCompatActivity
         for (Delivery delivery : list) {
             if (!delivery.getState().equals("delivered")) {
                 LatLng latLng = getLocationFromAddress(delivery.getAddress());
-                map.addMarker(new MarkerOptions().position(latLng));
+                map.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(delivery.getCompanyName()));
             }
         }
     }
@@ -333,6 +338,11 @@ public class ProfessionalActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         updateLocation(location);
+        if (checkClosenessToDeliveryDestination(location)) {
+            deliverButton.setVisibility(View.VISIBLE);
+        } else {
+            deliverButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updateLocation(Location location) {
@@ -341,6 +351,19 @@ public class ProfessionalActivity extends AppCompatActivity
 
         couriers.child(user.getUid()).child("latitude").setValue(latitude);
         couriers.child(user.getUid()).child("longitude").setValue(longitude);
+    }
+
+    private boolean checkClosenessToDeliveryDestination(Location location) {
+        Log.e(TAG, "Antes del IF");
+        if (deliveriesLocationList.size() > 0) {
+            Log.e(TAG, "Entro en el IF");
+            for (Location loc : deliveriesLocationList) {
+                if (location.distanceTo(loc) < 200) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -389,13 +412,25 @@ public class ProfessionalActivity extends AppCompatActivity
         return latLng;
     }
 
+    private void getLocationFromDelivery() {
+        for (Delivery delivery : deliveriesList) {
+            LatLng lng = getLocationFromAddress(delivery.getAddress());
+            Location location = new Location("");
+            location.setLatitude(lng.latitude);
+            location.setLongitude(lng.longitude);
+            deliveriesLocationList.add(location);
+        }
+    }
+
     private class DeliveriesPopulator extends AsyncTask {
 
         @Override
         protected Object doInBackground(Object[] params) {
             getDeliveriesFromDatabase();
-            return null;
+            List<Delivery> del = deliveriesList;
+            return del;
         }
+
     }
 
 }
