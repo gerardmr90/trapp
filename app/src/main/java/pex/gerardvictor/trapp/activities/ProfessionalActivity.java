@@ -3,6 +3,7 @@ package pex.gerardvictor.trapp.activities;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -18,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +52,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import pex.gerardvictor.trapp.R;
@@ -62,6 +66,7 @@ public class ProfessionalActivity extends AppCompatActivity
 
     private static final String TAG = "ProfessionalActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final double THRESHOLD = 20.0;
 
     private DatabaseReference deliveries;
     private DatabaseReference couriers;
@@ -80,9 +85,13 @@ public class ProfessionalActivity extends AppCompatActivity
 
     private List<Delivery> deliveriesList = new ArrayList<>();
     private List<Location> deliveriesLocationList = new ArrayList<>();
+    private List<Marker> markersList = new ArrayList<>();
 
     private Button deliverButton;
     private Button showDeliveriesButton;
+    private Dialog dialog;
+
+    private boolean close = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,15 +154,10 @@ public class ProfessionalActivity extends AppCompatActivity
                     .findFragmentById(R.id.map_professional);
             mapFragment.getMapAsync(this);
 
-            DeliveriesPopulator deliveriesPopulator = new DeliveriesPopulator();
+            final DeliveriesPopulator deliveriesPopulator = new DeliveriesPopulator();
             deliveriesPopulator.execute();
 
-            deliverButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            dialog = createAlertDialog();
 
             showDeliveriesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,22 +165,59 @@ public class ProfessionalActivity extends AppCompatActivity
                     if (deliveriesList.size() == 0) {
                         Toast.makeText(context, "There's no deliveries", Toast.LENGTH_LONG).show();
                     } else {
-                        addDeliveriesToMap(deliveriesList);
-                        getLocationFromDelivery();
+                        MarkerHandler markerHandler = new MarkerHandler();
+                        markerHandler.execute(deliveriesList);
                     }
                 }
             });
         }
     }
 
-    private void addDeliveriesToMap(List<Delivery> list) {
+    private Dialog createAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProfessionalActivity.this, R.style.ThemeOverlay_AppCompat_Dialog_Alert);
+        builder.setTitle("Set as delivered")
+                .setMessage("Do you want to set the parcel as delivered?")
+                .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+
+        }).setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        return builder.create();
+    }
+
+    private void updateMap() {
+
+    }
+
+    private void updateFirebaseDatabase() {
+
+    }
+
+    private List<LatLng> addDeliveriesToMap(List<Delivery> list) {
+        List<LatLng> latLngList = new ArrayList<>();
         for (Delivery delivery : list) {
             if (!delivery.getState().equals("delivered")) {
                 LatLng latLng = getLocationFromAddress(delivery.getAddress());
-                map.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(delivery.getCompanyName()));
+                latLngList.add(latLng);
             }
+        }
+        return latLngList;
+    }
+
+    private void addMarkerToMap(List<LatLng> list) {
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+            LatLng lng = (LatLng) iterator.next();
+            markersList.add(map.addMarker(new MarkerOptions()
+                    .position(lng).title(lng.toString())));
         }
     }
 
@@ -338,11 +379,7 @@ public class ProfessionalActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         updateLocation(location);
-        if (checkClosenessToDeliveryDestination(location)) {
-            deliverButton.setVisibility(View.VISIBLE);
-        } else {
-            deliverButton.setVisibility(View.INVISIBLE);
-        }
+        close = checkClosenessToDeliveryDestination(location);
     }
 
     private void updateLocation(Location location) {
@@ -354,11 +391,9 @@ public class ProfessionalActivity extends AppCompatActivity
     }
 
     private boolean checkClosenessToDeliveryDestination(Location location) {
-        Log.e(TAG, "Antes del IF");
         if (deliveriesLocationList.size() > 0) {
-            Log.e(TAG, "Entro en el IF");
             for (Location loc : deliveriesLocationList) {
-                if (location.distanceTo(loc) < 200) {
+                if (location.distanceTo(loc) < THRESHOLD) {
                     return true;
                 }
             }
@@ -376,6 +411,13 @@ public class ProfessionalActivity extends AppCompatActivity
         map = googleMap;
         map.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
+//        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//                dialog.show();
+//                return false;
+//            }
+//        });
     }
 
     private void enableMyLocation() {
@@ -431,6 +473,20 @@ public class ProfessionalActivity extends AppCompatActivity
             return del;
         }
 
+    }
+
+    private class MarkerHandler extends AsyncTask <List<Delivery>, Void, List<LatLng>> {
+
+        @Override
+        protected List<LatLng> doInBackground(List<Delivery>... params) {
+            return addDeliveriesToMap(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<LatLng> latLngList) {
+            addMarkerToMap(latLngList);
+            getLocationFromDelivery();
+        }
     }
 
 }

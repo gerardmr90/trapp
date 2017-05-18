@@ -220,5 +220,8 @@
     <string name="create_delivery_date_textView">Date</string>
     <string name="create_delivery_button">Create Delivery</string>
     <string name="delivery_created">Delivery successfully created</string>
+    <string name="alert_dialog_yes">Set as delivered</string>
+    <string name="alert_dialog_no">Cancel</string>
+
 
 </resources>
