@@ -411,13 +411,13 @@ public class ProfessionalActivity extends AppCompatActivity
         map = googleMap;
         map.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
-//        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                dialog.show();
-//                return false;
-//            }
-//        });
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                dialog.show();
+                return false;
+            }
+        });
     }
 
     private void enableMyLocation() {
