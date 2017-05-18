@@ -44,14 +44,19 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pex.gerardvictor.trapp.activities.PersonalActivity" />
+                android:value="pex.gerardvictor.trapp.activities.ChooserActivity" />
         </activity>
         <activity android:name=".activities.ChooserActivity" />
         <activity
             android:name=".activities.HistoryActivity"
+
             android:label="@string/title_activity_history"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pex.gerardvictor.trapp.activities.ChooserActivity" />
+        </activity>
         <activity
             android:name=".activities.PersonalActivity"
             android:label="@string/title_activity_main"
@@ -94,8 +99,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.DeliveryCreatorActivity"
-            android:parentActivityName=".activities.ChooserActivity">
-        </activity>
+            android:parentActivityName=".activities.ChooserActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

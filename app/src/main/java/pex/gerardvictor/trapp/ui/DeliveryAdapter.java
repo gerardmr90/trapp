@@ -1,6 +1,7 @@
 package pex.gerardvictor.trapp.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     @Override
     public void onBindViewHolder(DeliveryViewHolder holder, int position) {
         Delivery delivery = deliveries.get(position);
-        holder.companyName.setText(delivery.getCompany().getName());
+        holder.companyName.setText(delivery.getCompanyName());
         holder.deliveryDate.setText(delivery.getDate());
         holder.deliveryState.setText(delivery.getState());
     }

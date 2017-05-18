@@ -2,9 +2,7 @@ package pex.gerardvictor.trapp.entities;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +15,6 @@ public class Receiver {
     private String name;
     private String email;
     private String address;
-    private List<Delivery> deliveries;
 
     public Receiver() {
     }
@@ -27,15 +24,6 @@ public class Receiver {
         this.name = name;
         this.email = email;
         this.address = address;
-        this.deliveries = new ArrayList<>();
-    }
-
-    public Receiver(String uid, String name, String email, String address, List<Delivery> deliveries) {
-        this.uid = uid;
-        this.name = name;
-        this.email = email;
-        this.address = address;
-        this.deliveries = deliveries;
     }
 
     public String getUid() {
@@ -70,14 +58,6 @@ public class Receiver {
         this.address = address;
     }
 
-    public List<Delivery> getDeliveries() {
-        return deliveries;
-    }
-
-    public void setDeliveries(List<Delivery> deliveries) {
-        this.deliveries = deliveries;
-    }
-
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -85,7 +65,6 @@ public class Receiver {
         result.put("name", name);
         result.put("email", email);
         result.put("address", address);
-        result.put("deliveries", deliveries);
 
         return result;
     }
@@ -96,7 +75,6 @@ public class Receiver {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
-                ", deliveries=" + deliveries +
                 '}';
     }
 }

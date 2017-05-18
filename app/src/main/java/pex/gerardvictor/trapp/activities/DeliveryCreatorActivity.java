@@ -273,53 +273,67 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private void createDelivery() {
-        flushDatabase(writeDelivery());
+        writeDelivery();
     }
 
-    private Delivery writeDelivery() {
+    private void writeDelivery() {
         String key = database.child("deliveries").push().getKey();
-        receiver = searchForReceiver();
-        company = searchForCompany();
-        date = dateEditText.getText().toString();
-        courier = new Courier(user.getUid(), user.getDisplayName(), user.getEmail());
-        Delivery delivery = new Delivery(key, courier, receiver, company, date, state);
+        String receiver = searchForReceiver();
+        String address = searchForReceiverAddress();
+        String company = searchForCompanyName();
+        String companyUID = searchForCompanyUID();
+        String date = dateEditText.getText().toString();
+        Delivery delivery = new Delivery(key, user.getUid(), receiver, companyUID, company, address, date, state);
         Map<String, Object> postValues = delivery.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/deliveries/" + key, postValues);
-        childUpdates.put("/couriers/" + courier.getUid() + "/" + key, postValues);
-        childUpdates.put("/receivers/" + receiver.getUid() + "/" + key, postValues);
 
         database.updateChildren(childUpdates);
-
-        return delivery;
     }
 
-    private Receiver searchForReceiver() {
+    private String searchForReceiver() {
         Iterator iterator = receiversList.iterator();
         while (iterator.hasNext()) {
             Receiver recv = (Receiver) iterator.next();
             if (recv.getEmail().equals(receiverEmail)) {
-                return recv;
+                return recv.getUid();
             }
         }
         return null;
     }
 
-    private Company searchForCompany() {
+    private String searchForReceiverAddress() {
+        Iterator iterator = receiversList.iterator();
+        while (iterator.hasNext()) {
+            Receiver recv = (Receiver) iterator.next();
+            if (recv.getEmail().equals(receiverEmail)) {
+                return recv.getAddress();
+            }
+        }
+        return null;
+    }
+
+    private String searchForCompanyName() {
         Iterator iterator = companiesList.iterator();
         while (iterator.hasNext()) {
             Company comp = (Company) iterator.next();
             if (comp.getName().equals(companyName)) {
-                return comp;
+                return comp.getName();
             }
         }
         return null;
     }
 
-    private void flushDatabase(Delivery delivery) {
-        couriers.child(user.getUid()).child(delivery.getUid()).child("courier").removeValue();
-        receivers.child(receiver.getUid()).child(delivery.getUid()).child("receiver").removeValue();
+    private String searchForCompanyUID() {
+        Iterator iterator = companiesList.iterator();
+        while (iterator.hasNext()) {
+            Company comp = (Company) iterator.next();
+            if (comp.getName().equals(companyName)) {
+                return comp.getUid();
+            }
+        }
+        return null;
     }
 
     private boolean validateForm() {

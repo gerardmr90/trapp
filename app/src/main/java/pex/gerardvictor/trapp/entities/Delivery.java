@@ -12,20 +12,24 @@ import java.util.Map;
 public class Delivery {
 
     private String uid;
-    private Courier courier;
-    private Receiver receiver;
-    private Company company;
+    private String courierUID;
+    private String receiverUID;
+    private String companyUID;
+    private String companyName;
+    private String address;
     private String date;
     private String state;
 
     public Delivery() {
     }
 
-    public Delivery(String uid, Courier courier, Receiver receiver, Company company, String date, String state) {
+    public Delivery(String uid, String courierUID, String receiverUID, String companyUID, String companyName, String address, String date, String state) {
         this.uid = uid;
-        this.courier = courier;
-        this.receiver = receiver;
-        this.company = company;
+        this.courierUID = courierUID;
+        this.receiverUID = receiverUID;
+        this.companyUID = companyUID;
+        this.companyName = companyName;
+        this.address = address;
         this.date = date;
         this.state = state;
     }
@@ -38,28 +42,44 @@ public class Delivery {
         this.uid = uid;
     }
 
-    public Courier getCourier() {
-        return courier;
+    public String getCourierUID() {
+        return courierUID;
     }
 
-    public void setCourier(Courier courier) {
-        this.courier = courier;
+    public void setCourierUID(String courierUID) {
+        this.courierUID = courierUID;
     }
 
-    public Company getCompany() {
-        return company;
+    public String getReceiverUID() {
+        return receiverUID;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setReceiverUID(String receiverUID) {
+        this.receiverUID = receiverUID;
     }
 
-    public Receiver getReceiver() {
-        return receiver;
+    public String getCompanyUID() {
+        return companyUID;
     }
 
-    public void setReceiver(Receiver receiver) {
-        this.receiver = receiver;
+    public void setCompanyUID(String companyUID) {
+        this.companyUID = companyUID;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getDate() {
@@ -82,9 +102,11 @@ public class Delivery {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
-        result.put("courier", courier);
-        result.put("receiver", receiver);
-        result.put("company", company);
+        result.put("courier_uid", courierUID);
+        result.put("receiver_uid", receiverUID);
+        result.put("company_uid", companyUID);
+        result.put("company_name", companyName);
+        result.put("address", address);
         result.put("date", date);
         result.put("state", state);
 
@@ -94,12 +116,14 @@ public class Delivery {
     @Override
     public String toString() {
         return "Delivery{" +
-                "courier=" + courier +
-                ", receiver=" + receiver +
-                ", company=" + company +
+                "uid='" + uid + '\'' +
+                ", courierUID='" + courierUID + '\'' +
+                ", receiverUID='" + receiverUID + '\'' +
+                ", companyUID='" + companyUID + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", address='" + address + '\'' +
                 ", date='" + date + '\'' +
                 ", state='" + state + '\'' +
                 '}';
     }
-
 }

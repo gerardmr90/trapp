@@ -2,9 +2,7 @@ package pex.gerardvictor.trapp.entities;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +14,8 @@ public class Courier {
     private String uid;
     private String name;
     private String email;
-    private List<Delivery> deliveries;
+    private Double latitude;
+    private Double longitude;
 
     public Courier() {
     }
@@ -25,14 +24,16 @@ public class Courier {
         this.uid = uid;
         this.name = name;
         this.email = email;
-        this.deliveries = new ArrayList<>();
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
-    public Courier(String uid, String name, String email, List<Delivery> deliveries) {
+    public Courier(String uid, String name, String email, Double latitude, Double longitude) {
         this.uid = uid;
         this.name = name;
         this.email = email;
-        this.deliveries = deliveries;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getUid() {
@@ -59,12 +60,20 @@ public class Courier {
         this.email = email;
     }
 
-    public List<Delivery> getDeliveries() {
-        return deliveries;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setDeliveries(List<Delivery> deliveries) {
-        this.deliveries = deliveries;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     @Exclude
@@ -73,7 +82,8 @@ public class Courier {
         result.put("uid", uid);
         result.put("name", name);
         result.put("email", email);
-        result.put("deliveries", deliveries);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
 
         return result;
     }
@@ -81,9 +91,12 @@ public class Courier {
     @Override
     public String toString() {
         return "Courier{" +
-                "name='" + name + '\'' +
+                "uid='" + uid + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", deliveries=" + deliveries +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
     }
+
 }
