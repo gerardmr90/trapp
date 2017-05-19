@@ -26,7 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +47,6 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
 
     private DatabaseReference receivers;
     private DatabaseReference companies;
-    private DatabaseReference couriers;
     private DatabaseReference database;
     private ChildEventListener receiversChildEventListener;
     private ChildEventListener companiesChildEventListener;
@@ -103,7 +101,6 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference();
         receivers = FirebaseDatabase.getInstance().getReference("receivers");
         companies = FirebaseDatabase.getInstance().getReference("companies");
-        couriers = FirebaseDatabase.getInstance().getReference("couriers");
 
         ReceiversPopulator receiversPopulator = new ReceiversPopulator();
         ReceiversEmailPopulator receiversEmailPopulator = new ReceiversEmailPopulator();
@@ -293,9 +290,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private String searchForReceiver() {
-        Iterator iterator = receiversList.iterator();
-        while (iterator.hasNext()) {
-            Receiver recv = (Receiver) iterator.next();
+        for (Receiver recv : receiversList) {
             if (recv.getEmail().equals(receiverEmail)) {
                 return recv.getUid();
             }
@@ -304,9 +299,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private String searchForReceiverAddress() {
-        Iterator iterator = receiversList.iterator();
-        while (iterator.hasNext()) {
-            Receiver recv = (Receiver) iterator.next();
+        for (Receiver recv : receiversList) {
             if (recv.getEmail().equals(receiverEmail)) {
                 return recv.getAddress();
             }
@@ -315,9 +308,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private String searchForCompanyName() {
-        Iterator iterator = companiesList.iterator();
-        while (iterator.hasNext()) {
-            Company comp = (Company) iterator.next();
+        for (Company comp : companiesList) {
             if (comp.getName().equals(companyName)) {
                 return comp.getName();
             }
@@ -326,9 +317,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private String searchForCompanyUID() {
-        Iterator iterator = companiesList.iterator();
-        while (iterator.hasNext()) {
-            Company comp = (Company) iterator.next();
+        for (Company comp : companiesList) {
             if (comp.getName().equals(companyName)) {
                 return comp.getUid();
             }

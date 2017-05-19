@@ -52,8 +52,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.entities.Delivery;
@@ -83,9 +84,10 @@ public class ProfessionalActivity extends AppCompatActivity
     private GoogleApiClient googleApiClient;
     private GoogleMap map;
 
-    private List<Delivery> deliveriesList = new ArrayList<>();
-    private List<Location> deliveriesLocationList = new ArrayList<>();
-    private List<Marker> markersList = new ArrayList<>();
+    private Map<String, Delivery> deliveriesMap = new HashMap<>();
+    private Map<String, Location> deliveriesLocationsMap = new HashMap<>();
+    private Map<String, Marker> deliveriesLocationsMarkersMap = new HashMap<>();
+    private Marker selectedMarker;
 
     private Button deliverButton;
     private Button showDeliveriesButton;
@@ -162,11 +164,11 @@ public class ProfessionalActivity extends AppCompatActivity
             showDeliveriesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (deliveriesList.size() == 0) {
+                    if (deliveriesMap.size() == 0) {
                         Toast.makeText(context, "There's no deliveries", Toast.LENGTH_LONG).show();
                     } else {
                         MarkerHandler markerHandler = new MarkerHandler();
-                        markerHandler.execute(deliveriesList);
+                        markerHandler.execute(deliveriesMap);
                     }
                 }
             });
@@ -178,12 +180,18 @@ public class ProfessionalActivity extends AppCompatActivity
         builder.setTitle("Set as delivered")
                 .setMessage("Do you want to set the parcel as delivered?")
                 .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!close) {
+                            selectedMarker.remove();
+                            String uid = updateFirebaseDatabase();
+                            updateResources(uid);
+                        } else {
+                             Toast.makeText(context, "You have to be closer to delivery drop off", Toast.LENGTH_LONG).show();
+                        }
+                    }
 
-            }
-
-        }).setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -193,31 +201,38 @@ public class ProfessionalActivity extends AppCompatActivity
         return builder.create();
     }
 
-    private void updateMap() {
-
-    }
-
-    private void updateFirebaseDatabase() {
-
-    }
-
-    private List<LatLng> addDeliveriesToMap(List<Delivery> list) {
-        List<LatLng> latLngList = new ArrayList<>();
-        for (Delivery delivery : list) {
-            if (!delivery.getState().equals("delivered")) {
-                LatLng latLng = getLocationFromAddress(delivery.getAddress());
-                latLngList.add(latLng);
+    private String updateFirebaseDatabase() {
+        String uid = "";
+        for (Map.Entry<String, Marker> entry : deliveriesLocationsMarkersMap.entrySet()) {
+            if (entry.getValue().equals(selectedMarker)) {
+                uid = entry.getKey();
+                deliveries.child(uid).child("state").setValue("Delivered");
             }
         }
-        return latLngList;
+        return uid;
     }
 
-    private void addMarkerToMap(List<LatLng> list) {
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            LatLng lng = (LatLng) iterator.next();
-            markersList.add(map.addMarker(new MarkerOptions()
-                    .position(lng).title(lng.toString())));
+    private void updateResources(String key) {
+        deliveriesLocationsMarkersMap.remove(key);
+        deliveriesLocationsMap.remove(key);
+        deliveriesMap.remove(key);
+    }
+
+    private Map<String, LatLng> addDeliveriesToHashMap(Map<String, Delivery> deliveriesMap) {
+        Map<String, LatLng> map = new HashMap<>();
+        for (Map.Entry<String, Delivery> entry : deliveriesMap.entrySet()) {
+            if (!entry.getValue().getState().equals("Delivered")) {
+                LatLng latLng = getLocationFromAddress(entry.getValue().getAddress());
+                map.put(entry.getKey(), latLng);
+            }
+        }
+        return map;
+    }
+
+    private void addMarkerToMap(Map<String, LatLng> hashMap) {
+        for (Map.Entry<String, LatLng> entry : hashMap.entrySet()) {
+            deliveriesLocationsMarkersMap.put(entry.getKey(), map.addMarker(new MarkerOptions()
+                    .position(entry.getValue())));
         }
     }
 
@@ -227,22 +242,20 @@ public class ProfessionalActivity extends AppCompatActivity
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
                 Delivery delivery = dataSnapshot.getValue(Delivery.class);
-                deliveriesList.add(delivery);
+                deliveriesMap.put(delivery.getUid(), delivery);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-                String deliveryKey = dataSnapshot.getKey();
                 Delivery delivery = dataSnapshot.getValue(Delivery.class);
-                deliveriesList.add(delivery);
+                deliveriesMap.put(delivery.getUid(), delivery);
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-                String deliveryKey = dataSnapshot.getKey();
             }
 
             @Override
@@ -250,7 +263,7 @@ public class ProfessionalActivity extends AppCompatActivity
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
                 Delivery movedDelivery = dataSnapshot.getValue(Delivery.class);
                 String deliveryKey = dataSnapshot.getKey();
-                deliveriesList.add(movedDelivery);
+                deliveriesMap.put(movedDelivery.getUid(), movedDelivery);
             }
 
             @Override
@@ -359,8 +372,8 @@ public class ProfessionalActivity extends AppCompatActivity
             return;
         }
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(10000);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -391,9 +404,9 @@ public class ProfessionalActivity extends AppCompatActivity
     }
 
     private boolean checkClosenessToDeliveryDestination(Location location) {
-        if (deliveriesLocationList.size() > 0) {
-            for (Location loc : deliveriesLocationList) {
-                if (location.distanceTo(loc) < THRESHOLD) {
+        if (deliveriesLocationsMap.size() > 0) {
+            for (Map.Entry<String, Location> entry : deliveriesLocationsMap.entrySet()) {
+                if (location.distanceTo(entry.getValue()) < THRESHOLD) {
                     return true;
                 }
             }
@@ -414,6 +427,7 @@ public class ProfessionalActivity extends AppCompatActivity
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                selectedMarker = marker;
                 dialog.show();
                 return false;
             }
@@ -455,12 +469,12 @@ public class ProfessionalActivity extends AppCompatActivity
     }
 
     private void getLocationFromDelivery() {
-        for (Delivery delivery : deliveriesList) {
-            LatLng lng = getLocationFromAddress(delivery.getAddress());
+        for (Map.Entry<String, Delivery> entry : deliveriesMap.entrySet()) {
+            LatLng lng = getLocationFromAddress(entry.getValue().getAddress());
             Location location = new Location("");
             location.setLatitude(lng.latitude);
             location.setLongitude(lng.longitude);
-            deliveriesLocationList.add(location);
+            deliveriesLocationsMap.put(entry.getKey(), location);
         }
     }
 
@@ -469,24 +483,24 @@ public class ProfessionalActivity extends AppCompatActivity
         @Override
         protected Object doInBackground(Object[] params) {
             getDeliveriesFromDatabase();
-            List<Delivery> del = deliveriesList;
-            return del;
+            return null;
         }
 
     }
 
-    private class MarkerHandler extends AsyncTask <List<Delivery>, Void, List<LatLng>> {
+    private class MarkerHandler extends AsyncTask<Map<String, Delivery>, Void, Map<String, LatLng>> {
 
         @Override
-        protected List<LatLng> doInBackground(List<Delivery>... params) {
-            return addDeliveriesToMap(params[0]);
+        protected Map<String, LatLng> doInBackground(Map<String, Delivery>... params) {
+            return addDeliveriesToHashMap(params[0]);
         }
 
         @Override
-        protected void onPostExecute(List<LatLng> latLngList) {
-            addMarkerToMap(latLngList);
+        protected void onPostExecute(Map<String, LatLng> map) {
+            addMarkerToMap(map);
             getLocationFromDelivery();
         }
+
     }
 
 }
