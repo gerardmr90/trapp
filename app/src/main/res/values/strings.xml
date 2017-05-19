@@ -213,7 +213,7 @@
 
     <string name="show_deliveries_button">Show deliveries</string>
     <string name="deliver_button_text">Deliver</string>
-    <string name="find_courier_button_text">Find courier</string>
+    <string name="find_parcel_button_text">Find parcel</string>
 
     <string name="create_delivery_receiver_textView">Receiver</string>
     <string name="create_delivery_company_textView">Company</string>

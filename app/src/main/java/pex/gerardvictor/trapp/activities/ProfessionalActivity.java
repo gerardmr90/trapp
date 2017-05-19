@@ -51,7 +51,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +186,7 @@ public class ProfessionalActivity extends AppCompatActivity
                             String uid = updateFirebaseDatabase();
                             updateResources(uid);
                         } else {
-                             Toast.makeText(context, "You have to be closer to delivery drop off", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "You have to be closer to delivery drop off", Toast.LENGTH_LONG).show();
                         }
                     }
 
