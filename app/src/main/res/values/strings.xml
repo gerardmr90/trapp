@@ -222,6 +222,7 @@
     <string name="delivery_created">Delivery successfully created</string>
     <string name="alert_dialog_yes">Set as delivered</string>
     <string name="alert_dialog_no">Cancel</string>
+    <string name="permission_rejected_text">Permission was rejected, without the permission the app is not able to work properly</string>
 
 
 </resources>

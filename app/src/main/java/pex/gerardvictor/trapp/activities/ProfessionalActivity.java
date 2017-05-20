@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -62,7 +63,8 @@ import pex.gerardvictor.trapp.session.Session;
 public class ProfessionalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener,
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = "ProfessionalActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -422,7 +424,14 @@ public class ProfessionalActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMyLocationButtonClickListener(this);
-        enableMyLocation();
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -431,6 +440,21 @@ public class ProfessionalActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) throws SecurityException {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    map.setMyLocationEnabled(true);
+                } else {
+                    Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private void enableMyLocation() {
