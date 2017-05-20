@@ -102,10 +102,10 @@ public class Delivery {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
-        result.put("courier_uid", courierUID);
-        result.put("receiver_uid", receiverUID);
-        result.put("company_uid", companyUID);
-        result.put("company_name", companyName);
+        result.put("courierUID", courierUID);
+        result.put("receiverUID", receiverUID);
+        result.put("companyUID", companyUID);
+        result.put("companyName", companyName);
         result.put("address", address);
         result.put("date", date);
         result.put("state", state);

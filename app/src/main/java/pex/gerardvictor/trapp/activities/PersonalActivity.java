@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,29 +23,39 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.ButtCap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.entities.Courier;
+import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.session.Session;
 
 public class PersonalActivity extends AppCompatActivity
@@ -58,6 +69,8 @@ public class PersonalActivity extends AppCompatActivity
 
     private DatabaseReference deliveries;
     private ChildEventListener deliveriesChildEventListener;
+    private DatabaseReference couriers;
+    private ChildEventListener couriersChildEventListener;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -68,6 +81,11 @@ public class PersonalActivity extends AppCompatActivity
 
     private GoogleApiClient googleApiClient;
     private GoogleMap map;
+
+    private Map<String, Delivery> deliveriesMap = new HashMap<>();
+    private Map<String, Courier> couriersMap = new HashMap<>();
+
+    private Button findParcelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +102,8 @@ public class PersonalActivity extends AppCompatActivity
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        findParcelButton = (Button) findViewById(R.id.find_parcel_button);
 
         context = getApplicationContext();
 
@@ -123,10 +143,122 @@ public class PersonalActivity extends AppCompatActivity
                     .findFragmentById(R.id.map_personal);
             mapFragment.getMapAsync(this);
 
+            couriers = FirebaseDatabase.getInstance().getReference("couriers");
             deliveries = FirebaseDatabase.getInstance().getReference("deliveries");
 
-        }
+            DeliveriesPopulator deliveriesPopulator = new DeliveriesPopulator();
+            deliveriesPopulator.execute();
 
+            findParcelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (couriersMap.size() == 0) {
+                        Toast.makeText(context, "All your parcels have been delivered", Toast.LENGTH_LONG).show();
+                    } else {
+                        addParcelLocationToMap(couriersMap);
+                    }
+                }
+            });
+        }
+    }
+
+    private void addParcelLocationToMap(Map<String, Courier> hashMap) {
+        for (Map.Entry<String, Courier> entry : hashMap.entrySet()) {
+            LatLng latLng = new LatLng(entry.getValue().getLatitude(), entry.getValue().getLongitude());
+            map.addMarker(new MarkerOptions()
+                    .position(latLng));
+        }
+    }
+
+    private void getCouriersFromDatabase() {
+        couriersMap.clear();
+        couriersChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                Courier courier = dataSnapshot.getValue(Courier.class);
+                if (deliveriesMap.containsKey(courier.getUid())) {
+                    couriersMap.put(courier.getUid(), courier);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+                Courier courier = dataSnapshot.getValue(Courier.class);
+                if (deliveriesMap.containsKey(courier.getUid())) {
+                    couriersMap.put(courier.getUid(), courier);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                Courier movedCourier = dataSnapshot.getValue(Courier.class);
+                if (deliveriesMap.containsKey(movedCourier.getUid())) {
+                    couriersMap.put(movedCourier.getUid(), movedCourier);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getCoriers:onCancelled", databaseError.toException());
+                Toast.makeText(context, "Failed to get Couriers.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+        couriers.addChildEventListener(couriersChildEventListener);
+    }
+
+    private void getDeliveriesFromDatabase() {
+        deliveriesMap.clear();
+        deliveriesChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                Delivery delivery = dataSnapshot.getValue(Delivery.class);
+                if (!delivery.getState().equals("Delivered")) {
+                    deliveriesMap.put(delivery.getCourierUID(), delivery);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+                Delivery delivery = dataSnapshot.getValue(Delivery.class);
+                if (!delivery.getState().equals("Delivered")) {
+                    deliveriesMap.put(delivery.getCourierUID(), delivery);
+                }
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                Delivery movedDelivery = dataSnapshot.getValue(Delivery.class);
+                if (!movedDelivery.getState().equals("Delivered")) {
+                    deliveriesMap.put(movedDelivery.getCourierUID(), movedDelivery);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getDeliveries:onCancelled", databaseError.toException());
+                Toast.makeText(context, "Failed to get deliveries.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+        deliveries.addChildEventListener(deliveriesChildEventListener);
     }
 
     @Override
@@ -217,6 +349,8 @@ public class PersonalActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            map.setMyLocationEnabled(true);
         }
     }
 
@@ -273,4 +407,17 @@ public class PersonalActivity extends AppCompatActivity
 
         return latLng;
     }
+
+    public class DeliveriesPopulator extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            getDeliveriesFromDatabase();
+            getCouriersFromDatabase();
+            return null;
+        }
+
+    }
+
 }
+

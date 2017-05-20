@@ -430,6 +430,8 @@ public class ProfessionalActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            map.setMyLocationEnabled(true);
         }
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -454,17 +456,6 @@ public class ProfessionalActivity extends AppCompatActivity
                     Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
                 }
             }
-        }
-    }
-
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-        } else if (map != null) {
-            // Access to the location has been granted to the app.
-            map.setMyLocationEnabled(true);
         }
     }
 
