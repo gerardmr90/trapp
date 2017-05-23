@@ -7,3 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+.tmp
+.npm
+/server/functions/node_modules
+.directory

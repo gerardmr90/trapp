@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.activities.ChooserActivity;
 import pex.gerardvictor.trapp.activities.LoginActivity;
 
 public class MessagingService extends FirebaseMessagingService {
@@ -35,7 +36,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String body) {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, ChooserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 

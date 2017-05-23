@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -308,12 +309,16 @@ public class ProfessionalActivity extends AppCompatActivity
             firebaseAuth.signOut();
             finish();
         } else if (id == R.id.nav_share) {
-
+            String url = "https://gitlab.com/gerardmr90/PEX_Trapp";
+            Intent browser = new Intent(Intent.ACTION_VIEW);
+            browser.setData(Uri.parse(url));
+            startActivity(browser);
         } else if (id == R.id.nav_send) {
-
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setType("text/plain");
+            email.putExtra(Intent.EXTRA_EMAIL, "feedback@trapp.com");
+            startActivity(email);
         } else if (id == R.id.nav_about) {
-
-        } else if (id == R.id.nav_n) {
 
         }
 

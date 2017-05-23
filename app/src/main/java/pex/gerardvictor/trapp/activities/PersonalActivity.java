@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,14 +31,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.ButtCap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -118,6 +118,7 @@ public class PersonalActivity extends AppCompatActivity
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d(TAG, "Firebase Token:" + FirebaseInstanceId.getInstance().getToken());
                     View navigationDrawerView = navigationView.getHeaderView(0);
                     TextView userEmail = (TextView) navigationDrawerView.findViewById(R.id.user_email_textView);
                     TextView userName = (TextView) navigationDrawerView.findViewById(R.id.user_name_textView);
@@ -288,9 +289,15 @@ public class PersonalActivity extends AppCompatActivity
             firebaseAuth.signOut();
             finish();
         } else if (id == R.id.nav_share) {
-
+            String url = "https://gitlab.com/gerardmr90/PEX_Trapp";
+            Intent browser = new Intent(Intent.ACTION_VIEW);
+            browser.setData(Uri.parse(url));
+            startActivity(browser);
         } else if (id == R.id.nav_send) {
-
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setType("text/plain");
+            email.putExtra(Intent.EXTRA_EMAIL, "feedback@trapp.com");
+            startActivity(email);
         } else if (id == R.id.nav_about) {
 
         }
@@ -369,7 +376,6 @@ public class PersonalActivity extends AppCompatActivity
         }
     }
 
-
     private boolean checkGooglePlayServices() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
@@ -385,28 +391,6 @@ public class PersonalActivity extends AppCompatActivity
         }
     }
 
-    public LatLng getLocationFromAddress(String address) {
-        Geocoder coder = new Geocoder(context);
-        List<Address> addressList;
-        LatLng latLng = null;
-
-        try {
-            addressList = coder.getFromLocationName(address, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = addressList.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return latLng;
-    }
 
     public class DeliveriesPopulator extends AsyncTask {
 

@@ -58,17 +58,6 @@ public class Receiver {
         this.address = address;
     }
 
-    @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("uid", uid);
-        result.put("name", name);
-        result.put("email", email);
-        result.put("address", address);
-
-        return result;
-    }
-
     @Override
     public String toString() {
         return "Receiver{" +

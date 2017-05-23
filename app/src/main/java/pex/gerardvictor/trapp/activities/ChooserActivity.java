@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * Created by gerard on 23/04/17.
@@ -23,7 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 public class ChooserActivity extends AppCompatActivity {
 
     private static final String TAG = "ChooserActivity";
-    private DatabaseReference database;
+    private DatabaseReference receivers;
+    private DatabaseReference couriers;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private ProgressDialog progressDialog;
@@ -39,24 +41,29 @@ public class ChooserActivity extends AppCompatActivity {
         progressDialog.show();
 
         firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference("receivers");
+        receivers = FirebaseDatabase.getInstance().getReference("receivers");
+        couriers = FirebaseDatabase.getInstance().getReference("couriers");
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    database.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                    receivers.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 Intent personal = new Intent(ChooserActivity.this, PersonalActivity.class);
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                receivers.child(user.getUid()).child("token").setValue(token);
                                 startActivity(personal);
                                 finish();
                             } else {
                                 Intent professional = new Intent(ChooserActivity.this, ProfessionalActivity.class);
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                couriers.child(user.getUid()).child("token").setValue(token);
                                 startActivity(professional);
                                 finish();
                             }
