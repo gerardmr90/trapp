@@ -17,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -317,7 +316,11 @@ public class ProfessionalActivity extends AppCompatActivity
             Intent email = new Intent(Intent.ACTION_SENDTO);
             email.setType("text/plain");
             email.putExtra(Intent.EXTRA_EMAIL, "feedback@trapp.com");
-            startActivity(email);
+            try {
+                startActivity(email);
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(ProfessionalActivity.this, "There are no email applications installed.", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.nav_about) {
 
         }

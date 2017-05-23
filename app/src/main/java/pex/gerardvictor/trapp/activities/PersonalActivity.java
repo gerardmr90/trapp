@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -48,9 +46,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
@@ -297,7 +293,11 @@ public class PersonalActivity extends AppCompatActivity
             Intent email = new Intent(Intent.ACTION_SENDTO);
             email.setType("text/plain");
             email.putExtra(Intent.EXTRA_EMAIL, "feedback@trapp.com");
-            startActivity(email);
+            try {
+                startActivity(email);
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(PersonalActivity.this, "There are no email applications installed.", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.nav_about) {
 
         }
