@@ -285,6 +285,8 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/deliveries/" + key, postValues);
+        childUpdates.put("/courier_deliveries/" + user.getUid() + "/" + key, postValues);
+        childUpdates.put("/receiver_deliveries/" + receiver + "/" + key, postValues);
 
         database.updateChildren(childUpdates);
     }

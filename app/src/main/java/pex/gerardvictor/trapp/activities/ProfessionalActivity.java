@@ -50,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,6 +73,8 @@ public class ProfessionalActivity extends AppCompatActivity
 
     private DatabaseReference deliveries;
     private DatabaseReference couriers;
+    private DatabaseReference courierDeliveries;
+    private DatabaseReference receiverDeliveries;
     private ChildEventListener deliveriesChildEventListener;
 
     private FirebaseAuth firebaseAuth;
@@ -116,9 +119,6 @@ public class ProfessionalActivity extends AppCompatActivity
         deliverButton.setVisibility(View.INVISIBLE);
         showDeliveriesButton = (Button) findViewById(R.id.show_deliveries_button);
 
-        deliveries = FirebaseDatabase.getInstance().getReference("deliveries");
-        couriers = FirebaseDatabase.getInstance().getReference("couriers");
-
         session = new Session(this);
 
         context = getApplicationContext();
@@ -152,6 +152,12 @@ public class ProfessionalActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+
+
+            deliveries = FirebaseDatabase.getInstance().getReference("deliveries");
+            courierDeliveries = FirebaseDatabase.getInstance().getReference("courier_deliveries").child(user.getUid());
+            receiverDeliveries = FirebaseDatabase.getInstance().getReference("receiver_deliveries");
+            couriers = FirebaseDatabase.getInstance().getReference("couriers");
 
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map_professional);
@@ -207,7 +213,22 @@ public class ProfessionalActivity extends AppCompatActivity
         for (Map.Entry<String, Marker> entry : deliveriesLocationsMarkersMap.entrySet()) {
             if (entry.getValue().equals(selectedMarker)) {
                 uid = entry.getKey();
+                courierDeliveries.child(uid).child("state").setValue("Delivered");
                 deliveries.child(uid).child("state").setValue("Delivered");
+                courierDeliveries.child(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Delivery delivery = dataSnapshot.getValue(Delivery.class);
+                        String deliveryUID = delivery.getUid();
+                        String receiverUID = delivery.getReceiverUID();
+                        receiverDeliveries.child(receiverUID).child(deliveryUID).child("state").setValue("Delivered");
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
         return uid;
@@ -274,7 +295,7 @@ public class ProfessionalActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show();
             }
         };
-        deliveries.addChildEventListener(deliveriesChildEventListener);
+        courierDeliveries.addChildEventListener(deliveriesChildEventListener);
     }
 
     @Override

@@ -141,7 +141,7 @@ public class PersonalActivity extends AppCompatActivity
             mapFragment.getMapAsync(this);
 
             couriers = FirebaseDatabase.getInstance().getReference("couriers");
-            deliveries = FirebaseDatabase.getInstance().getReference("deliveries");
+            deliveries = FirebaseDatabase.getInstance().getReference("receiver_deliveries").child(user.getUid());
 
             DeliveriesPopulator deliveriesPopulator = new DeliveriesPopulator();
             deliveriesPopulator.execute();
