@@ -59,6 +59,7 @@ import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.entities.Delivery;
+import pex.gerardvictor.trapp.helpers.LocationHelper;
 import pex.gerardvictor.trapp.session.Session;
 
 public class ProfessionalActivity extends AppCompatActivity
@@ -96,6 +97,8 @@ public class ProfessionalActivity extends AppCompatActivity
     private Button deliverButton;
     private Button showDeliveriesButton;
     private Dialog dialog;
+
+    private LocationHelper locationHelper;
 
     private boolean close = false;
 
@@ -244,7 +247,7 @@ public class ProfessionalActivity extends AppCompatActivity
         Map<String, LatLng> map = new HashMap<>();
         for (Map.Entry<String, Delivery> entry : deliveriesMap.entrySet()) {
             if (!entry.getValue().getState().equals("Delivered")) {
-                LatLng latLng = getLocationFromAddress(entry.getValue().getAddress());
+                LatLng latLng = LocationHelper.getLocationFromAddress(entry.getValue().getAddress(), context);
                 map.put(entry.getKey(), latLng);
             }
         }
@@ -488,32 +491,32 @@ public class ProfessionalActivity extends AppCompatActivity
         }
     }
 
-    public LatLng getLocationFromAddress(String address) {
-        Geocoder coder = new Geocoder(context);
-        List<Address> addressList;
-        LatLng latLng = null;
-
-        try {
-            addressList = coder.getFromLocationName(address, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = addressList.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return latLng;
-    }
+//    public LatLng getLocationFromAddress(String address) {
+//        Geocoder coder = new Geocoder(context);
+//        List<Address> addressList;
+//        LatLng latLng = null;
+//
+//        try {
+//            addressList = coder.getFromLocationName(address, 5);
+//            if (address == null) {
+//                return null;
+//            }
+//            Address location = addressList.get(0);
+//            location.getLatitude();
+//            location.getLongitude();
+//
+//            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        return latLng;
+//    }
 
     private void getLocationFromDelivery() {
         for (Map.Entry<String, Delivery> entry : deliveriesMap.entrySet()) {
-            LatLng lng = getLocationFromAddress(entry.getValue().getAddress());
+            LatLng lng = LocationHelper.getLocationFromAddress(entry.getValue().getAddress(), context);
             Location location = new Location("");
             location.setLatitude(lng.latitude);
             location.setLongitude(lng.longitude);

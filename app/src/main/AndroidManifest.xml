@@ -49,7 +49,6 @@
         <activity android:name=".activities.ChooserActivity" />
         <activity
             android:name=".activities.HistoryActivity"
-
             android:label="@string/title_activity_history"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -101,6 +100,11 @@
             android:name=".activities.DeliveryCreatorActivity"
             android:parentActivityName=".activities.ChooserActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
