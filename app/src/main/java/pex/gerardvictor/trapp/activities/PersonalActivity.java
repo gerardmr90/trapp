@@ -205,8 +205,6 @@ public class PersonalActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getCoriers:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to get Couriers.",
-                        Toast.LENGTH_SHORT).show();
             }
         };
         couriers.addChildEventListener(couriersChildEventListener);
@@ -251,8 +249,6 @@ public class PersonalActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getDeliveries:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to get deliveries.",
-                        Toast.LENGTH_SHORT).show();
             }
         };
         deliveries.addChildEventListener(deliveriesChildEventListener);
@@ -318,6 +314,12 @@ public class PersonalActivity extends AppCompatActivity
         super.onStop();
         if (firebaseAuth != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+        if (deliveries != null) {
+            deliveries.removeEventListener(deliveriesChildEventListener);
+        }
+        if (couriers != null) {
+            couriers.removeEventListener(couriersChildEventListener);
         }
     }
 

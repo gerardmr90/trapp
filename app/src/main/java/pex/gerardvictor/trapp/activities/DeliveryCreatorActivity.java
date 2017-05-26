@@ -31,7 +31,6 @@ import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.entities.Company;
-import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.entities.Receiver;
 
@@ -65,11 +64,6 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
 
     private String receiverEmail;
     private String companyName;
-    private Receiver receiver;
-    private Company company;
-    private Courier courier;
-    private String date;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,29 +194,24 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
                 Receiver receiver = dataSnapshot.getValue(Receiver.class);
-                String receiverKey = dataSnapshot.getKey();
                 receiversList.add(receiver);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-                String receiverKey = dataSnapshot.getKey();
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
                 Receiver movedReceiver = dataSnapshot.getValue(Receiver.class);
-                String receiverKey = dataSnapshot.getKey();
                 receiversList.add(movedReceiver);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getReceivers:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to get receivers.",
-                        Toast.LENGTH_SHORT).show();
             }
         };
         receivers.addChildEventListener(receiversChildEventListener);
@@ -241,29 +230,24 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
                 Company company = dataSnapshot.getValue(Company.class);
-                String companyKey = dataSnapshot.getKey();
                 companiesList.add(company);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-                String companyKey = dataSnapshot.getKey();
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
                 Company movedCompany = dataSnapshot.getValue(Company.class);
-                String companyKey = dataSnapshot.getKey();
                 companiesList.add(movedCompany);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getCompanies:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to get companies.",
-                        Toast.LENGTH_SHORT).show();
             }
         };
         companies.addChildEventListener(companiesChildEventListener);
@@ -353,6 +337,13 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         if (authStateListener != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
+        if (receivers != null) {
+            receivers.removeEventListener(receiversChildEventListener);
+        }
+        if (companies != null) {
+            companies.removeEventListener(companiesChildEventListener);
+        }
+
     }
 
     private class ReceiversPopulator extends AsyncTask {

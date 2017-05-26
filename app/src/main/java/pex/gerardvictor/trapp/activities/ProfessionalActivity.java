@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -52,9 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
@@ -97,8 +93,6 @@ public class ProfessionalActivity extends AppCompatActivity
     private Button deliverButton;
     private Button showDeliveriesButton;
     private Dialog dialog;
-
-    private LocationHelper locationHelper;
 
     private boolean close = false;
 
@@ -294,8 +288,6 @@ public class ProfessionalActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getDeliveries:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to get deliveries.",
-                        Toast.LENGTH_SHORT).show();
             }
         };
         courierDeliveries.addChildEventListener(deliveriesChildEventListener);
@@ -386,6 +378,9 @@ public class ProfessionalActivity extends AppCompatActivity
         }
         if (googleApiClient != null && googleApiClient.isConnected()) {
             googleApiClient.disconnect();
+        }
+        if (courierDeliveries != null) {
+            courierDeliveries.removeEventListener(deliveriesChildEventListener);
         }
     }
 
@@ -490,29 +485,6 @@ public class ProfessionalActivity extends AppCompatActivity
             }
         }
     }
-
-//    public LatLng getLocationFromAddress(String address) {
-//        Geocoder coder = new Geocoder(context);
-//        List<Address> addressList;
-//        LatLng latLng = null;
-//
-//        try {
-//            addressList = coder.getFromLocationName(address, 5);
-//            if (address == null) {
-//                return null;
-//            }
-//            Address location = addressList.get(0);
-//            location.getLatitude();
-//            location.getLongitude();
-//
-//            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return latLng;
-//    }
 
     private void getLocationFromDelivery() {
         for (Map.Entry<String, Delivery> entry : deliveriesMap.entrySet()) {

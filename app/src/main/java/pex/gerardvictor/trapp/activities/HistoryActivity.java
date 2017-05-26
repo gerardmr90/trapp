@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -122,30 +121,24 @@ public class HistoryActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
                 Delivery delivery = dataSnapshot.getValue(Delivery.class);
-                String deliveryKey = dataSnapshot.getKey();
                 deliveryList.add(delivery);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-                String deliveryKey = dataSnapshot.getKey();
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
                 Delivery movedDelivery = dataSnapshot.getValue(Delivery.class);
-                String deliveryKey = dataSnapshot.getKey();
                 deliveryList.add(movedDelivery);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "postDeliveries:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Failed to load deliveries.",
-                        Toast.LENGTH_SHORT).show();
-
             }
         };
         database.addChildEventListener(childEventListener);
@@ -160,7 +153,12 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        database.removeEventListener(childEventListener);
+        if (firebaseAuth != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+        if (database != null) {
+            database.removeEventListener(childEventListener);
+        }
     }
 
     private class HistoryPopulator extends AsyncTask {
