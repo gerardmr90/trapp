@@ -143,7 +143,7 @@ public class ProfessionalActivity extends AppCompatActivity
             }
         };
 
-        if (checkGooglePlayServices()) {
+        if (checkGooglePlayServices() && user.getUid() != null) {
             googleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
