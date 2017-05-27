@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.api.APIController;
 import pex.gerardvictor.trapp.entities.Company;
 import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.entities.Receiver;
@@ -273,7 +272,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         childUpdates.put("/courier_deliveries/" + user.getUid() + "/" + key, postValues);
         childUpdates.put("/receiver_deliveries/" + receiver + "/" + key, postValues);
 
-        APIController.getInstance().saveDelivery(delivery);
+//        APIController.getInstance().saveDelivery(delivery);
 
         database.updateChildren(childUpdates);
     }
