@@ -52,6 +52,7 @@ import java.util.Map;
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Delivery;
+import pex.gerardvictor.trapp.services.NotificationService;
 import pex.gerardvictor.trapp.session.Session;
 
 public class PersonalActivity extends AppCompatActivity
@@ -107,6 +108,9 @@ public class PersonalActivity extends AppCompatActivity
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        startService(serviceIntent);
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -229,7 +233,6 @@ public class PersonalActivity extends AppCompatActivity
                 if (!delivery.getState().equals("Delivered")) {
                     deliveriesMap.put(delivery.getCourierUID(), delivery);
                 }
-
             }
 
             @Override

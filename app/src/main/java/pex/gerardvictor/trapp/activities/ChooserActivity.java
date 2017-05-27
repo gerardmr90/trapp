@@ -63,7 +63,6 @@ public class ChooserActivity extends AppCompatActivity {
                             } else {
                                 Intent professional = new Intent(ChooserActivity.this, ProfessionalActivity.class);
                                 String token = FirebaseInstanceId.getInstance().getToken();
-                                couriers.child(user.getUid()).child("token").setValue(token);
                                 startActivity(professional);
                                 finish();
                             }
