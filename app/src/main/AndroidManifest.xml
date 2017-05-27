@@ -9,6 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -50,6 +51,7 @@
         <activity
             android:name=".activities.HistoryActivity"
             android:label="@string/title_activity_history"
+            android:parentActivityName=".activities.ChooserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -59,13 +61,23 @@
         <activity
             android:name=".activities.PersonalActivity"
             android:label="@string/title_activity_main"
+            android:parentActivityName=".activities.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pex.gerardvictor.trapp.activities.LoginActivity" />
+        </activity>
         <activity
             android:name=".activities.ProfessionalActivity"
             android:label="@string/title_activity_main"
+            android:parentActivityName=".activities.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pex.gerardvictor.trapp.activities.LoginActivity" />
+        </activity>
 
         <service
             android:name=".services.MessagingService"
@@ -95,11 +107,20 @@
             android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_register"
             android:parentActivityName=".activities.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pex.gerardvictor.trapp.activities.LoginActivity" />
+        </activity>
         <activity
             android:name=".activities.DeliveryCreatorActivity"
             android:parentActivityName=".activities.ChooserActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pex.gerardvictor.trapp.activities.ChooserActivity" />
+        </activity>
+
 
         <service
             android:name=".services.NotificationService"

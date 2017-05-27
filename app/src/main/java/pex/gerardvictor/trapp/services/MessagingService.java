@@ -7,14 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.activities.ChooserActivity;
-import pex.gerardvictor.trapp.activities.LoginActivity;
+import pex.gerardvictor.trapp.activities.HistoryActivity;
+
+import static android.app.Notification.PRIORITY_MAX;
 
 public class MessagingService extends FirebaseMessagingService {
 
@@ -36,19 +39,25 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String body) {
-        Intent intent = new Intent(this, ChooserActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        Intent intent = new Intent(this, HistoryActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(HistoryActivity.class);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        long[] v = {500,1000};
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Notification.Builder builder = new Notification.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(getString(R.string.trapp_notification_header))
                 .setContentText(body).setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setVibrate(v)
+                .setPriority(PRIORITY_MAX)
+                .setContentIntent(resultPendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, builder.build());
+        notificationManager.notify(1, builder.build());
     }
 }
