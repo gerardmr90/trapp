@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiUtils {
 
     private static Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://trapp-app.herokuapp.com")
+            .baseUrl("http://trapp-app.herokuapp.com/")
             .client(getHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build();

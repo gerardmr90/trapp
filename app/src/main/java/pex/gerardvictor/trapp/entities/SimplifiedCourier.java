@@ -4,7 +4,7 @@ package pex.gerardvictor.trapp.entities;
  * Created by gerard on 27/05/17.
  */
 
-public class UploadedCourier {
+public class SimplifiedCourier {
 
     private String uid;
     private String name;
@@ -12,7 +12,7 @@ public class UploadedCourier {
     private String latitude;
     private String longitude;
 
-    public UploadedCourier(String uid, String name, String email) {
+    public SimplifiedCourier(String uid, String name, String email) {
         this.uid = uid;
         this.name = name;
         this.email = email;

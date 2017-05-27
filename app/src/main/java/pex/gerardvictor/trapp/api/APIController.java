@@ -8,7 +8,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import okhttp3.ResponseBody;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Delivery;
-import pex.gerardvictor.trapp.entities.UploadedCourier;
+import pex.gerardvictor.trapp.entities.SimplifiedCourier;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,9 +34,9 @@ public class APIController {
     public Task<Void> saveCourier(Courier courier) {
         final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 
-        UploadedCourier uploadedCourier = new UploadedCourier(courier.getUid(), courier.getName(), courier.getEmail());
+        SimplifiedCourier simplifiedCourier = new SimplifiedCourier(courier.getUid(), courier.getName(), courier.getEmail());
 
-        ApiUtils.getService().saveCourier(uploadedCourier)
+        ApiUtils.getService().saveCourier(simplifiedCourier)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
