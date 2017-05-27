@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.api.APIController;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Receiver;
 import pex.gerardvictor.trapp.session.Session;
@@ -185,6 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void writeNewCourier(String userID, Courier courier) {
         database = FirebaseDatabase.getInstance().getReference();
         database.child("couriers").child(userID).setValue(courier);
+        APIController.getInstance().saveCourier(courier);
     }
 
     private void writeNewReceiver(String userID, Receiver receiver) {
