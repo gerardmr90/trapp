@@ -53,7 +53,7 @@ public class APIController {
     }
 
 
-    public Task<Void> saveDelivey(Delivery delivery) {
+    public Task<Void> saveDelivery(Delivery delivery) {
         final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 
         ApiUtils.getService().saveDelivery(delivery)

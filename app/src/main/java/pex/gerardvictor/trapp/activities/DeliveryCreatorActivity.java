@@ -273,7 +273,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         childUpdates.put("/courier_deliveries/" + user.getUid() + "/" + key, postValues);
         childUpdates.put("/receiver_deliveries/" + receiver + "/" + key, postValues);
 
-        APIController.getInstance().saveDelivey(delivery);
+        APIController.getInstance().saveDelivery(delivery);
 
         database.updateChildren(childUpdates);
     }
