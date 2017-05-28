@@ -24,6 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -269,12 +272,13 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     }
 
     private void writeDelivery() {
-        String key = database.child("deliveries").push().getKey();
+        final String key = database.child("deliveries").push().getKey();
+        final String courier_uid = user.getUid();
         String receiver = searchForReceiver();
         String address = searchForReceiverAddress();
         String company = searchForCompanyName();
         String companyUID = searchForCompanyUID();
-        String date = dateEditText.getText().toString();
+        final String date = dateEditText.getText().toString();
         Delivery delivery = new Delivery(key, user.getUid(), receiver, companyUID, company, address, date, state);
         Map<String, Object> postValues = delivery.toMap();
 
@@ -283,10 +287,10 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         childUpdates.put("/courier_deliveries/" + user.getUid() + "/" + key, postValues);
         childUpdates.put("/receiver_deliveries/" + receiver + "/" + key, postValues);
 
-        apiService.saveDelivery(key, user.getUid(), date, state).enqueue(new Callback<SimplifiedDelivery>() {
+        apiService.saveDelivery(key, courier_uid, date, state).enqueue(new Callback<SimplifiedDelivery>() {
             @Override
             public void onResponse(Call<SimplifiedDelivery> call, Response<SimplifiedDelivery> response) {
-                Log.e(TAG, response.toString());
+
             }
 
             @Override

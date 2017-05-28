@@ -219,7 +219,6 @@ public class RegisterActivity extends AppCompatActivity {
         apiService.saveCourier(uid, name, email).enqueue(new Callback<SimplifiedCourier>() {
             @Override
             public void onResponse(Call<SimplifiedCourier> call, Response<SimplifiedCourier> response) {
-                Log.e(TAG, response.toString());
             }
 
             @Override

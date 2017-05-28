@@ -6,7 +6,7 @@ package pex.gerardvictor.trapp.api;
 
 public class APIUtils {
 
-    public static final String BASE_URL = "http://trapp-app.herokuapp.com/";
+    public static final String BASE_URL = "https://trapp-app.herokuapp.com/";
 
     private APIUtils() {
     }

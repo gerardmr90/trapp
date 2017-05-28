@@ -56,9 +56,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.api.APIService;
+import pex.gerardvictor.trapp.api.APIUtils;
 import pex.gerardvictor.trapp.entities.Delivery;
+import pex.gerardvictor.trapp.entities.SimplifiedDelivery;
 import pex.gerardvictor.trapp.helpers.LocationHelper;
 import pex.gerardvictor.trapp.session.Session;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfessionalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
@@ -95,6 +101,8 @@ public class ProfessionalActivity extends AppCompatActivity
     private Button showDeliveriesButton;
     private Dialog dialog;
 
+    private APIService apiService;
+
     private boolean close = false;
 
     @Override
@@ -120,6 +128,8 @@ public class ProfessionalActivity extends AppCompatActivity
         session = new Session(this);
 
         context = getApplicationContext();
+
+        apiService = APIUtils.getAPIService();
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
@@ -224,6 +234,17 @@ public class ProfessionalActivity extends AppCompatActivity
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                apiService.setStateToDelivered(uid, "Delivered").enqueue(new Callback<SimplifiedDelivery>() {
+                    @Override
+                    public void onResponse(Call<SimplifiedDelivery> call, Response<SimplifiedDelivery> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<SimplifiedDelivery> call, Throwable t) {
 
                     }
                 });
