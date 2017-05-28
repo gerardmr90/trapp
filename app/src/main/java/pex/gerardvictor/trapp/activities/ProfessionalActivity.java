@@ -2,6 +2,7 @@ package pex.gerardvictor.trapp.activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,6 +94,8 @@ public class ProfessionalActivity extends AppCompatActivity
     private Button deliverButton;
     private Button showDeliveriesButton;
     private Dialog dialog;
+
+    private ProgressDialog progressDialog;
 
     private boolean close = false;
 
@@ -508,6 +511,16 @@ public class ProfessionalActivity extends AppCompatActivity
 
     private class MarkerHandler extends AsyncTask<Map<String, Delivery>, Void, Map<String, LatLng>> {
 
+        private ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(ProfessionalActivity.this);
+            this.dialog.setMessage("Getting deliveries");
+            this.dialog.show();
+        }
+
+
         @Override
         protected Map<String, LatLng> doInBackground(Map<String, Delivery>... params) {
             return addDeliveriesToHashMap(params[0]);
@@ -517,6 +530,9 @@ public class ProfessionalActivity extends AppCompatActivity
         protected void onPostExecute(Map<String, LatLng> map) {
             addMarkerToMap(map);
             getLocationFromDelivery();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
 
     }
