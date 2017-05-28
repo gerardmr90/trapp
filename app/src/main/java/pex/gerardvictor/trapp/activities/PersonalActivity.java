@@ -2,6 +2,7 @@ package pex.gerardvictor.trapp.activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -44,6 +45,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
@@ -399,11 +401,27 @@ public class PersonalActivity extends AppCompatActivity
 
     public class DeliveriesPopulator extends AsyncTask {
 
+        private ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(PersonalActivity.this);
+            this.dialog.setMessage("Getting deliveries");
+            this.dialog.show();
+        }
+
         @Override
         protected Object doInBackground(Object[] params) {
             getDeliveriesFromDatabase();
             getCouriersFromDatabase();
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
 
     }

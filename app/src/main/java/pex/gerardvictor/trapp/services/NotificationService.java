@@ -150,11 +150,14 @@ public class NotificationService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(getString(R.string.trapp_notification_header))
-                .setContentText("Courier is close to your address, your parcel will be delivered soon").setAutoCancel(true)
+                .setContentText("Courier is close to your delivery address").setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setVibrate(v)
                 .setPriority(PRIORITY_MAX)
-                .setContentIntent(resultPendingIntent);
+                .setContentIntent(resultPendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                .bigText("Courier is close to your delivery address, your parcel will be handed soon"))
+        ;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, builder.build());

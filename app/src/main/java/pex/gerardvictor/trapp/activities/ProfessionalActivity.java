@@ -49,6 +49,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -73,7 +74,6 @@ public class ProfessionalActivity extends AppCompatActivity
     private DatabaseReference couriers;
     private DatabaseReference courierDeliveries;
     private DatabaseReference receiverDeliveries;
-    private ChildEventListener deliveriesChildEventListener;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -94,8 +94,6 @@ public class ProfessionalActivity extends AppCompatActivity
     private Button deliverButton;
     private Button showDeliveriesButton;
     private Dialog dialog;
-
-    private ProgressDialog progressDialog;
 
     private boolean close = false;
 
@@ -259,7 +257,8 @@ public class ProfessionalActivity extends AppCompatActivity
     }
 
     private void getDeliveriesFromDatabase() {
-        deliveriesChildEventListener = new ChildEventListener() {
+        Query query = courierDeliveries.orderByChild("state").startAt("Created").endAt("Created");
+        query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
@@ -284,7 +283,6 @@ public class ProfessionalActivity extends AppCompatActivity
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
                 Delivery movedDelivery = dataSnapshot.getValue(Delivery.class);
-                String deliveryKey = dataSnapshot.getKey();
                 deliveriesMap.put(movedDelivery.getUid(), movedDelivery);
             }
 
@@ -292,8 +290,7 @@ public class ProfessionalActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getDeliveries:onCancelled", databaseError.toException());
             }
-        };
-        courierDeliveries.addChildEventListener(deliveriesChildEventListener);
+        });
     }
 
     @Override
@@ -381,9 +378,6 @@ public class ProfessionalActivity extends AppCompatActivity
         }
         if (googleApiClient != null && googleApiClient.isConnected()) {
             googleApiClient.disconnect();
-        }
-        if (courierDeliveries != null) {
-            courierDeliveries.removeEventListener(deliveriesChildEventListener);
         }
     }
 
