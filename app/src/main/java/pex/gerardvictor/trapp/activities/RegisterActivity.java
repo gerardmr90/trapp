@@ -23,10 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import pex.gerardvictor.trapp.R;
-import pex.gerardvictor.trapp.api.APIController;
+import pex.gerardvictor.trapp.api.APIService;
+import pex.gerardvictor.trapp.api.ApiUtils;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Receiver;
+import pex.gerardvictor.trapp.entities.SimplifiedCourier;
 import pex.gerardvictor.trapp.session.Session;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -46,6 +51,8 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioButton professionalRadioButton;
     private RadioGroup radioGroup;
 
+    private APIService mAPIService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
         session = new Session(this);
+
+        mAPIService = ApiUtils.getAPIService();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -186,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void writeNewCourier(String userID, Courier courier) {
         database = FirebaseDatabase.getInstance().getReference();
         database.child("couriers").child(userID).setValue(courier);
-        APIController.getInstance().saveCourier(courier);
+//        APIController.getInstance().saveCourier(courier);
     }
 
     private void writeNewReceiver(String userID, Receiver receiver) {
@@ -206,6 +215,18 @@ public class RegisterActivity extends AppCompatActivity {
         String uid = user.getUid();
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
+
+        mAPIService.saveCourier(uid, name, email, "N/A", "N/A").enqueue(new Callback<SimplifiedCourier>() {
+            @Override
+            public void onResponse(Call<SimplifiedCourier> call, Response<SimplifiedCourier> response) {
+                Log.e(TAG, response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<SimplifiedCourier> call, Throwable t) {
+            }
+        });
+
         return new Courier(uid, name, email);
     }
 
