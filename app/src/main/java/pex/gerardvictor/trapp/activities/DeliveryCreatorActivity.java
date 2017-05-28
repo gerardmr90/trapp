@@ -30,9 +30,16 @@ import java.util.List;
 import java.util.Map;
 
 import pex.gerardvictor.trapp.R;
+import pex.gerardvictor.trapp.api.APIService;
+import pex.gerardvictor.trapp.api.APIUtils;
 import pex.gerardvictor.trapp.entities.Company;
 import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.entities.Receiver;
+import pex.gerardvictor.trapp.entities.SimplifiedCourier;
+import pex.gerardvictor.trapp.entities.SimplifiedDelivery;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class DeliveryCreatorActivity extends AppCompatActivity {
@@ -65,6 +72,8 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     private String receiverEmail;
     private String companyName;
 
+    private APIService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +95,8 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
                 }
             }
         };
+
+        apiService = APIUtils.getAPIService();
 
         receiversSpinner = (Spinner) findViewById(R.id.receivers_spinner);
         companiesSpinner = (Spinner) findViewById(R.id.companies_spinner);
@@ -272,7 +283,17 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         childUpdates.put("/courier_deliveries/" + user.getUid() + "/" + key, postValues);
         childUpdates.put("/receiver_deliveries/" + receiver + "/" + key, postValues);
 
-//        APIController.getInstance().saveDelivery(delivery);
+        apiService.saveDelivery(key, user.getUid(), date, state).enqueue(new Callback<SimplifiedDelivery>() {
+            @Override
+            public void onResponse(Call<SimplifiedDelivery> call, Response<SimplifiedDelivery> response) {
+                Log.e(TAG, response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<SimplifiedDelivery> call, Throwable t) {
+
+            }
+        });
 
         database.updateChildren(childUpdates);
     }

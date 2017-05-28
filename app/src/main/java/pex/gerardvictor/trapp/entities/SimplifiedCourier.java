@@ -21,14 +21,6 @@ public class SimplifiedCourier {
     @Expose
     private String email;
 
-    @SerializedName("latitude")
-    @Expose
-    private String latitude;
-
-    @SerializedName("longitude")
-    @Expose
-    private String longitude;
-
     public SimplifiedCourier() {
     }
 
@@ -36,8 +28,6 @@ public class SimplifiedCourier {
         this.uid = uid;
         this.name = name;
         this.email = email;
-        this.latitude = "N/A";
-        this.longitude = "N/A";
     }
 
 }

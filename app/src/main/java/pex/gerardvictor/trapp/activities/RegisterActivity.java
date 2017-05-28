@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.api.APIService;
-import pex.gerardvictor.trapp.api.ApiUtils;
+import pex.gerardvictor.trapp.api.APIUtils;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Receiver;
 import pex.gerardvictor.trapp.entities.SimplifiedCourier;
@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioButton professionalRadioButton;
     private RadioGroup radioGroup;
 
-    private APIService mAPIService;
+    private APIService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         session = new Session(this);
 
-        mAPIService = ApiUtils.getAPIService();
+        apiService = APIUtils.getAPIService();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -216,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity {
         String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
 
-        mAPIService.saveCourier(uid, name, email, "N/A", "N/A").enqueue(new Callback<SimplifiedCourier>() {
+        apiService.saveCourier(uid, name, email).enqueue(new Callback<SimplifiedCourier>() {
             @Override
             public void onResponse(Call<SimplifiedCourier> call, Response<SimplifiedCourier> response) {
                 Log.e(TAG, response.toString());
