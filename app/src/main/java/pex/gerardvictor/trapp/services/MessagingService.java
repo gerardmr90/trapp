@@ -16,6 +16,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.activities.HistoryActivity;
+import pex.gerardvictor.trapp.activities.LoginActivity;
 
 import static android.app.Notification.PRIORITY_MAX;
 
@@ -39,9 +40,9 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String body) {
-        Intent intent = new Intent(this, HistoryActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(HistoryActivity.class);
+        stackBuilder.addParentStack(LoginActivity.class);
         stackBuilder.addNextIntent(intent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
