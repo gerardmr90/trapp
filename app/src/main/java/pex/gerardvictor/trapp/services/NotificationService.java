@@ -27,6 +27,7 @@ import java.util.Set;
 import pex.gerardvictor.trapp.R;
 import pex.gerardvictor.trapp.activities.ChooserActivity;
 import pex.gerardvictor.trapp.activities.HistoryActivity;
+import pex.gerardvictor.trapp.activities.LoginActivity;
 import pex.gerardvictor.trapp.entities.Courier;
 import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.helpers.LocationHelper;
@@ -37,6 +38,8 @@ public class NotificationService extends Service {
 
     private static final String TAG = "NotificationService";
     private static final int THRESHOLD = 500;
+
+    private boolean notified = false;
 
     private static NotificationService instance = null;
 
@@ -126,7 +129,9 @@ public class NotificationService extends Service {
                 courierLocation.setLatitude(courier.getLatitude());
                 courierLocation.setLongitude(courier.getLongitude());
                 if (courierLocation.distanceTo(dropOff) < THRESHOLD) {
-                    sendNotification();
+                    if (!notified) {
+                        sendNotification();
+                    }
                 }
             }
 
@@ -138,7 +143,7 @@ public class NotificationService extends Service {
     }
 
     private void sendNotification() {
-        Intent intent = new Intent(this, ChooserActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(ChooserActivity.class);
         stackBuilder.addNextIntent(intent);
@@ -162,5 +167,6 @@ public class NotificationService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, builder.build());
 
+        notified = true;
     }
 }
