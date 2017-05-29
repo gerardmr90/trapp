@@ -144,6 +144,15 @@ public class HistoryActivity extends AppCompatActivity {
         database.addChildEventListener(childEventListener);
     }
 
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        this.deliveryList.clear();
+        deliveryAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();

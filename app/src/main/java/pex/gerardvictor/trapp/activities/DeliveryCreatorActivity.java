@@ -1,5 +1,6 @@
 package pex.gerardvictor.trapp.activities;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -24,10 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +38,13 @@ import pex.gerardvictor.trapp.api.APIUtils;
 import pex.gerardvictor.trapp.entities.Company;
 import pex.gerardvictor.trapp.entities.Delivery;
 import pex.gerardvictor.trapp.entities.Receiver;
-import pex.gerardvictor.trapp.entities.SimplifiedCourier;
 import pex.gerardvictor.trapp.entities.SimplifiedDelivery;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class DeliveryCreatorActivity extends AppCompatActivity {
+public class DeliveryCreatorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "DeliveryCreatorActivity";
     private static final String state = "Created";
@@ -71,6 +70,7 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
     private Spinner companiesSpinner;
     private Button createDeliveryButton;
     private EditText dateEditText;
+    private DatePickerDialog datePickerDialog;
 
     private String receiverEmail;
     private String companyName;
@@ -119,6 +119,25 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
         companiesPopulator.execute();
         companiesNamePopulator.execute();
 
+        dateEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                datePickerDialog = new DatePickerDialog(DeliveryCreatorActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                dateEditText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                            }
+                        }, year, month, day);
+                datePickerDialog.show();
+            }
+        });
+
         createDeliveryButton = (Button) findViewById(R.id.create_delivery_button);
         createDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +149,11 @@ public class DeliveryCreatorActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
     }
 
     private void getReceiversEmailFromDatabase() {
